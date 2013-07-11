@@ -1,0 +1,46 @@
+body 
+  {
+	background-color: white;
+	font-family: sans-serif;
+	margin: 0px;
+	padding: 0px;
+ }
+#wrapper 
+  {
+	width: 854px;
+	margin-left: auto;
+	margin-right: auto;
+  }
+#content
+  {
+	width:730px;
+	margin-left: 50px;
+	margin-right: 0px;
+  }
+
+.error
+  {
+    color: red;
+    text-align: left;
+    font-family: sans-serif;
+    list-style-type: disc;
+    font-size: 20pt;
+  }
+
+.success
+  {
+    color: black;
+    text-align: left;
+    font-family: sans-serif;
+    list-style-type: disc;
+    font-size: 20pt;
+  }
+
+.info
+  {
+    color: green;
+    text-align: left;
+    font-family: sans-serif;
+    font-size: 10pt;
+    background-color: lightyellow;
+  }
