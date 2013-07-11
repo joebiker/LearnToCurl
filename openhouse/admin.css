@@ -1,0 +1,120 @@
+body 
+{
+    margin-top: 0px;
+    font-family: Arial;
+    color: Black;
+    background-color: #BBC3B9;
+}
+
+#report_list li {
+	text-decoration: none;
+	list-style-type: none;
+}
+#report_list a:hover {
+	background: yellow;	
+}
+
+.error
+{
+    color: red;
+    text-align: left;
+    font-family: sans-serif;
+    list-style-type: disc;
+    font-size: 20pt;
+}
+
+.success
+  {
+    color: green;
+    text-align: left;
+    font-family: sans-serif;
+    list-style-type: disc;
+    font-size: 20pt;
+  }
+
+.userinput
+{
+    color: white;
+    text-align: left;
+    font-family: sans-serif;
+    list-style-type: disc;
+    font-size: 20pt;
+}
+
+.editbutton
+{
+    color: blue;
+    font-family: sans-serif;
+    font-size: 8pt;
+}
+
+.addbutton
+{
+    color: green;
+    font-family: sans-serif;
+    font-size: 8pt;
+}
+
+.savebutton
+{
+    color: red;
+    font-family: sans-serif;
+    font-size: 8pt;
+}
+
+.editrow
+{
+	position: absolute;
+	visibility: hidden;
+    color: blue;
+    font-family: sans-serif;
+    font-size: 8pt;
+}
+
+#selected
+{	
+	background-color: yellow; 
+	color: black;
+}
+
+h1 {
+	text-align:center;
+	color:red;
+}
+
+table.datatable {
+    margin: 0.5em 0 1em;
+}
+
+table.datatable th {
+    padding: 0 1em 0 0.5em;
+    border-bottom: 2px #66F solid;
+    text-align: left;
+}
+
+table.datatable td {
+    padding: 1px 0.5em;
+    border-bottom: 1px #DEE1FF solid;
+    border-left: 1px #DEE1FF solid;
+}
+
+table.headertable {
+    /*margin: 0.5em 0 1em;*/
+    width: 100%;
+}
+
+th.headertable {
+    padding: 0 1em 0 0.5em;
+    border: 2px #666 solid;
+    text-align: left;
+    background-color: white;
+}
+
+td.headertable {
+    padding: 1px 0.5em;
+    border: 1px #FFF solid;   
+}
+
+a.headertable {
+	text-decoration:none;
+}
