@@ -45,7 +45,7 @@ if( isset($_POST['type']) && "newopenhouse" == $_POST['type'] ) { // continue wi
 	
 	if( $_POST['type'] == "modifyopenhouse" ) {
 		// UPDATE sql
-		$query = "update openhouse set group_name='".$_POST['groupname']."', email='".$_POST['email']."', group_adults=".$_POST['adults'].", group_juniors=".$_POST['juniors'].", openhouse_id=".$_POST['openhouseid'].", edit_count=edit_count+1, edit_ip='".$_SERVER['REMOTE_ADDR']."', edit_date=now() where confirmation = '".$confirmation_number."'";
+		$query = "update learntocurl set group_name='".$_POST['groupname']."', email='".$_POST['email']."', group_adults=".$_POST['adults'].", group_juniors=".$_POST['juniors'].", openhouse_id=".$_POST['openhouseid'].", edit_count=edit_count+1, edit_ip='".$_SERVER['REMOTE_ADDR']."', edit_date=now() where confirmation = '".$confirmation_number."'";
 		
 		$update = mysql_query($query, $db_conn);
 		if( $update ) {
@@ -64,7 +64,7 @@ if( isset($_POST['type']) && "newopenhouse" == $_POST['type'] ) { // continue wi
 	$dbConfirm = $confirmation_number;
 	while( ($dbConfirm == $confirmation_number) && ($i < 3) ) {
 		/// check if random confirmation code exists in database
-		$isConfirmation = mysql_query("select group_name from openhouse where CONFIRMATION = '".$confirmation_number."'", $db_conn);
+		$isConfirmation = mysql_query("select group_name from learntocurl where CONFIRMATION = '".$confirmation_number."'", $db_conn);
 		if($isConfirmation) { //query was a success
 			if( mysql_num_rows($isConfirmation) > 0 ) { // Confirmation was found
 				// create new confirmation number
@@ -86,7 +86,7 @@ if( isset($_POST['type']) && "newopenhouse" == $_POST['type'] ) { // continue wi
 	$user_refer = htmlspecialchars ($_POST['user_refer']);
 	
 	/////////////////////////////// INSERT CUSTOMER ////////////////////////////////////////////
-	$insert = mysql_query("insert into openhouse(group_name, email, group_adults, group_juniors, confirmation, openhouse_id, learn_refer, reg_refer, user_refer, create_browser, create_ip) values('".htmlspecialchars($_POST['groupname'])."', '".htmlspecialchars($_POST['email'])."', ".$_POST['adults'].", ".$_POST['juniors'].", '".$confirmation_number."', '".$_POST['openhouseid']."', '".$learn_refer."', '".$reg_refer."', '".$user_refer."', '".$_SERVER['HTTP_USER_AGENT']."', '".$_SERVER['REMOTE_ADDR']."' ) ", $db_conn);
+	$insert = mysql_query("insert into learntocurl (group_name, email, group_adults, group_juniors, confirmation, openhouse_id, learn_refer, reg_refer, user_refer, create_browser, create_ip) values('".htmlspecialchars($_POST['groupname'])."', '".htmlspecialchars($_POST['email'])."', ".$_POST['adults'].", ".$_POST['juniors'].", '".$confirmation_number."', '".$_POST['openhouseid']."', '".$learn_refer."', '".$reg_refer."', '".$user_refer."', '".$_SERVER['HTTP_USER_AGENT']."', '".$_SERVER['REMOTE_ADDR']."' ) ", $db_conn);
 	
 	if( $insert ) {
 		echo "<div class='success'>Reservation is not gauranteed until payment is received!</div>";
@@ -97,7 +97,7 @@ if( isset($_POST['type']) && "newopenhouse" == $_POST['type'] ) { // continue wi
 	} // end normal registration
 	
 	// display registration 
-	$query = "select event_date, event_name, max_guests from openhouse_dates where ID = ".$_POST["openhouseid"];
+	$query = "select event_date, event_name, max_guests from learntocurl_dates where ID = ".$_POST["openhouseid"];
 	$result = mysql_query($query);
 	if(!$result) {
 		die("Error retrieving Learn to Curl details");
@@ -163,7 +163,7 @@ else if( isset($_REQUEST['type']) && "editopenhouse" == $_REQUEST['type'] &&
 	$db_conn = connect_db($DB_SERVER, $DB_USER, $DB_PASS, $DB_NAME);	// from include
 	
 	// Check if confirmation code exists.....
-	$query = "select group_name, email, group_adults, group_juniors, event_date, event_name, paid_dollars, paid_type, openhouse_id from openhouse, openhouse_dates where openhouse_id=id and CONFIRMATION = '".$confirmation_number."'";
+	$query = "select group_name, email, group_adults, group_juniors, event_date, event_name, paid_dollars, paid_type, openhouse_id from learntocurl, learntocurl_dates where openhouse_id=id and CONFIRMATION = '".$confirmation_number."'";
 	$result = mysql_query($query);
 	if( !$result ) {
 		die("<div class='error'>Could not execute your edit resuest: " . mysql_error(). "</div>");

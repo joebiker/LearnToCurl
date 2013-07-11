@@ -60,7 +60,7 @@ if( isset($_POST['type']) && (strlen($_POST['type']) > 4) ) {
 	$db_conn = connect_db($DB_SERVER, $DB_USER, $DB_PASS, $DB_NAME);	// from include
 
 	if( $_POST['type'] == "newopenhouse" ) {  // create new record
-		$result = mysql_query("insert into openhouse_dates(event_date, event_name, max_guests, comments, event_type) values('".$_POST['newdate']."', '".$_POST['newname']."', ".$_POST['newmax'].", '".$_POST['newcomments']."', '".$_POST['newtype']."')");
+		$result = mysql_query("insert into learntocurl_dates(event_date, event_name, max_guests, comments, event_type) values('".$_POST['newdate']."', '".$_POST['newname']."', ".$_POST['newmax'].", '".$_POST['newcomments']."', '".$_POST['newtype']."')");
 		if ($result) {
 			echo "<div class='success'>".$_POST['newdate']. " event created.</div>";
 		}
@@ -71,7 +71,7 @@ if( isset($_POST['type']) && (strlen($_POST['type']) > 4) ) {
 	else if ($_POST['type'] == "editopenhouse") {
 		// not able to update date.
 		// Consider allowing date change when no one has registered.
-		$query = "update openhouse_dates set max_guests = ".$_POST['newmax'].", event_name = '".$_POST['newname']."', comments = '".$_POST['newcomments']."' where id = ".$_POST['id']." and event_date = '".$_POST['newdate']."' ";
+		$query = "update learntocurl_dates set max_guests = ".$_POST['newmax'].", event_name = '".$_POST['newname']."', comments = '".$_POST['newcomments']."' where id = ".$_POST['id']." and event_date = '".$_POST['newdate']."' ";
 		$result = mysql_query($query);
 		$affect = mysql_affected_rows();
 		if ($result && $affect > 0) {
@@ -86,16 +86,15 @@ if( isset($_POST['type']) && (strlen($_POST['type']) > 4) ) {
 	}
 	else if ($_POST['type'] == "deleteopenhouse") {
 		
-		$result = mysql_query("delete from openhouse_dates where id = ".$_POST['id']);
+		$result = mysql_query("delete from learntocurl_dates where id = ".$_POST['id']);
 		if ($result) {
-			echo "<div class='success'>Open House Removed</div>";
+			echo "<div class='success'>Event removed</div>";
 		}
 		else {
 			echo "<div class='error'>Event not removed</div>";
 		}
 	}
 	else if ($_POST['type'] == "newguest") {
-		//echo "<div class='success'>Attempt to Add guest to openhouse</div>";
    		if ( strlen($_POST["groupname"]) < 2 ) {
    			echo "<div class='error'>When adding, you must specify a name.</div>";
 		} // error check
@@ -104,25 +103,21 @@ if( isset($_POST['type']) && (strlen($_POST['type']) > 4) ) {
 		$confirmation_number = createConfirmation($_POST["groupname"], $_POST["adults"] + $_POST["juniors"]);
    		if( isset($_POST['attended']) && strcmp($_POST['attended'], "on") == 0 )
 	   		$_POST['attended'] = 1;
-	   		else 
+	   	else 
 	   		$_POST['attended'] = 0;
    		if( isset($_POST['waiver']) && strcmp($_POST['waiver'], "on") == 0 )
 	   		$_POST['waiver'] = 1;
-	   		else 
+	   	else 
 	   		$_POST['waiver'] = 0;
    		
-   		
-   		$query = "insert into openhouse(group_name, email, group_adults, group_juniors, confirmation, openhouse_id, paid_dollars, paid_type, attended, waiver, user_refer, reg_refer, create_browser, create_ip) values('".htmlspecialchars($_POST['groupname'])."', '".htmlspecialchars($_POST['email'])."', ".$_POST['adults'].", ".$_POST['juniors'].", '".$confirmation_number."', '".$_POST['openhouseid']."', ".$_POST['paid'].", '".$_POST['paid_type']."', ".$_POST['attended'].", ".$_POST['waiver'].", '".$_POST['user_refer']."', 'manually entered user', '".$_SERVER['HTTP_USER_AGENT']."', '".$_SERVER['REMOTE_ADDR']."' ) ";
-		// groupname, adults, juniors, email, paid, paid_type, attended, waiver
+   		$query = "insert into learntocurl (group_name, email, group_adults, group_juniors, confirmation, openhouse_id, paid_dollars, paid_type, attended, waiver, user_refer, reg_refer, create_browser, create_ip) values('".htmlspecialchars($_POST['groupname'])."', '".htmlspecialchars($_POST['email'])."', ".$_POST['adults'].", ".$_POST['juniors'].", '".$confirmation_number."', '".$_POST['openhouseid']."', ".$_POST['paid'].", '".$_POST['paid_type']."', ".$_POST['attended'].", ".$_POST['waiver'].", '".$_POST['user_refer']."', 'manually entered user', '".$_SERVER['HTTP_USER_AGENT']."', '".$_SERVER['REMOTE_ADDR']."' ) ";
 		$result = mysql_query($query, $db_conn);
-		//                     insert into openhouse(group_name, email, group_adults, group_juniors, confirmation) values('Joe', 'joebiker@gmail.com', '3', 'JAAA3')
 		
 		if ($result) {
-			echo "<div class='success'>Guest added to Open House</div>";
+			echo "<div class='success'>Guest added to event</div>";
 		}
 		else {
-			echo "<div class='error'>Error adding guest</div>";
-			echo $query;
+			echo "<div class='error'>Error adding guest to event</div>";
 		}
 		
 		} // error checking end.
@@ -156,7 +151,7 @@ if( isset($_POST['type']) && (strlen($_POST['type']) > 4) ) {
 		/*echo*/ setFlag($confirmation_number, 'waiver', $waiver);
 
 		
-		$query = "update openhouse set paid_dollars='".$_POST['paiddollars']."', paid_type='".$_POST['paidtype']."' where confirmation = '".$confirmation_number."'";		
+		$query = "update learntocurl set paid_dollars='".$_POST['paiddollars']."', paid_type='".$_POST['paidtype']."' where confirmation = '".$confirmation_number."'";		
 		$update = mysql_query($query, $db_conn);
 		if( $update ) {
 		//	echo "<div class='success'>Your Modifications were recorded.</div>";
@@ -168,7 +163,7 @@ if( isset($_POST['type']) && (strlen($_POST['type']) > 4) ) {
 	else if( isset($_REQUEST['type']) && "deleteguest" == $_REQUEST['type'] ) {  // remove eronous users
 		
 		$confirmation_number = $_POST['confnumber'];
-		$query = "delete from openhouse where confirmation = '".$confirmation_number."'";
+		$query = "delete from learntocurl where confirmation = '".$confirmation_number."'";
 		$update = mysql_query($query, $db_conn);
 		if( $update ) {
 			echo "<div class='success'>Successfully removed $confirmation_number.</div>";
@@ -196,8 +191,6 @@ if( isset($_POST['type']) && (strlen($_POST['type']) > 4) ) {
 </div>
 
 <span id="openspace"></span>
-<!-- use PHP to build list of available dates -->
-	<!-- date, name, id for sessions. Name can be used to describe novice/attended openhouse before--game play -->
 
 <?php
 
@@ -206,7 +199,7 @@ $db_conn = connect_db($DB_SERVER, $DB_USER, $DB_PASS, $DB_NAME);	// from include
 $result = false;
 // only display the selected open house -- ALLOW view form submit
 if(isset($_REQUEST['view']))
-	$result = mysql_query("select EVENT_NAME, EVENT_DATE, MAX_GUESTS, ID, COMMENTS from openhouse_dates where id = ".$_REQUEST['view']." order by EVENT_DATE ASC", $db_conn);
+	$result = mysql_query("select EVENT_NAME, EVENT_DATE, MAX_GUESTS, ID, COMMENTS from learntocurl_dates where id = ".$_REQUEST['view']." order by EVENT_DATE ASC", $db_conn);
 
 if($result && isset($_REQUEST['view']) ) { //query was a success
 	//echo "statement hit";
@@ -219,13 +212,12 @@ if($result && isset($_REQUEST['view']) ) { //query was a success
 		."</TR>";
 	    //	    ."<TH class=headertable>Limit $row[2] &nbsp;</TR>";
 	    echo "<TR><TD colspan='3' class=headertable>"; //<div id='myPanel$row[3]'>&nbsp;";  // IE6 needs the &nbsp;
-	    //echo "<span id='openhouse$row[3]'></span>";
 		
 		echo $row[4];
 		echo "<table class='datatable'>";								// Build DATA ROWS PER-EACH OPEN HOUSE
 		echo "<TR><TH>View Details<TH>Name<TH>Adults<TH>Jr.<TH>Paid Type<TH>Paid Dollars<TH>Attended<TH>Waiver</TR>";
 		
-		$resultdata = mysql_query("select group_name, group_adults, group_juniors, email, paid_dollars, paid_type, confirmation, attended, waiver, user_refer, learn_refer, reg_refer from openhouse, openhouse_dates where id = openhouse_id AND id = $row[3] order by EVENT_DATE ASC, attended desc, waiver desc, confirmation, group_adults desc, group_name", $db_conn);
+		$resultdata = mysql_query("select group_name, group_adults, group_juniors, email, paid_dollars, paid_type, confirmation, attended, waiver, user_refer, learn_refer, reg_refer from learntocurl, learntocurl_dates where id = openhouse_id AND id = $row[3] order by EVENT_DATE ASC, attended desc, waiver desc, confirmation, group_adults desc, group_name", $db_conn);
 		if($resultdata) { //query was a success
 			while ($rowdata = mysql_fetch_array($resultdata, MYSQL_BOTH)) {
 				echo '<form action="openhouseuseredit.php?conf='.$rowdata[6].'" method=post name="oh'.$row[3].'">';

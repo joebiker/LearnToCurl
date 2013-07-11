@@ -75,7 +75,7 @@ function recordPayment() {
 			include '../database.php';
 			
 			$db_conn = connect_db($DB_SERVER, $DB_USER, $DB_PASS, $DB_NAME);	// from include
-			$query = "update openhouse set paid_type='paypal', paid_dollars=".$payment." where confirmation='".$lookup."' LIMIT 1";
+			$query = "update learntocurl set paid_type='paypal', paid_dollars=".$payment." where confirmation='".$lookup."' LIMIT 1";
 			
 			$update = mysql_query($query, $db_conn);
 			if( $update ) {
@@ -86,7 +86,7 @@ function recordPayment() {
 			}
 			
 			// Lookup name/email address
-			$query = "select group_name, email FROM openhouse WHERE confirmation='".$lookup."' ";
+			$query = "select group_name, email FROM learntocurl WHERE confirmation='".$lookup."' ";
 			
 			$result = mysql_query($query, $db_conn);
 			if( $result ) {

@@ -79,7 +79,7 @@
 		include '../common.php';
 		include '../database.php';
 		$db_conn = connect_db($DB_SERVER, $DB_USER, $DB_PASS, $DB_NAME);	// from include
-		$query = "select group_name, email, group_adults, group_juniors, event_date, event_name from openhouse, openhouse_dates where openhouse_id=id and CONFIRMATION = '".$confirmation."'";
+		$query = "select group_name, email, group_adults, group_juniors, event_date, event_name from learntocurl, learntocurl_dates where openhouse_id=id and CONFIRMATION = '".$confirmation."'";
 		// DEBUG
 		echo "<!-- " . $query ." -->";
 		

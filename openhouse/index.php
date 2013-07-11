@@ -75,7 +75,7 @@ if( isset($_REQUEST['type']) && "editopenhouse" == $_REQUEST['type'] ) {  // edi
 	$db_conn = connect_db($DB_SERVER, $DB_USER, $DB_PASS, $DB_NAME);	// from include
 	
 	// Check if confirmation code exists.....
-	$query = "select group_name, email, group_adults, group_juniors, event_date, event_name, id from openhouse, openhouse_dates where openhouse_id=id and EVENT_DATE >= current_date() and CONFIRMATION = '".$_REQUEST["confnumber"]."' ";
+	$query = "select group_name, email, group_adults, group_juniors, event_date, event_name, id from learntocurl, learntocurl_dates where openhouse_id=id and EVENT_DATE >= current_date() and CONFIRMATION = '".$_REQUEST["confnumber"]."' ";
 	$result = mysql_query($query);
 	if( !$result ) {
 		die("<div class='error'>Could not execute your edit resuest: " . mysql_error(). "</div>");
@@ -108,7 +108,7 @@ if( isset($_REQUEST['type']) && "editopenhouse" == $_REQUEST['type'] ) {  // edi
 <TD><select name="openhouseid" id="openhouseid" onchange="checkReg(this.value);">
 <?php
 
-	$events_result = mysql_query("select ID, EVENT_DATE, EVENT_NAME from openhouse_dates where EVENT_DATE >= current_date() and EVENT_TYPE='L' order by EVENT_DATE ASC", $db_conn);
+	$events_result = mysql_query("select ID, EVENT_DATE, EVENT_NAME from learntocurl_dates where EVENT_DATE >= current_date() and EVENT_TYPE='L' order by EVENT_DATE ASC", $db_conn);
 	if($events_result) { //query was a success
 		while ($row = mysql_fetch_array($events_result, MYSQL_BOTH)) {
 			if( $modify_event_id == $row[0] ) $selected = "selected"; else $selected = "";

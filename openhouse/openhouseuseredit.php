@@ -25,7 +25,7 @@ if( isset($_GET['conf']) && strlen($_GET['conf']) < 10) {
 	include '../database.php';
 	$db_conn = connect_db($DB_SERVER, $DB_USER, $DB_PASS, $DB_NAME);	// from include
 
-	$resultdata = mysql_query("select group_name, group_adults, group_juniors, email, paid_dollars, paid_type, confirmation, attended, waiver, id, user_refer, reg_refer, learn_refer from openhouse, openhouse_dates where id = openhouse_id AND confirmation='$conf' order by EVENT_DATE ASC, group_name", $db_conn);
+	$resultdata = mysql_query("select group_name, group_adults, group_juniors, email, paid_dollars, paid_type, confirmation, attended, waiver, id, user_refer, reg_refer, learn_refer from learntocurl, learntocurl_dates where id = openhouse_id AND confirmation='$conf' order by EVENT_DATE ASC, group_name", $db_conn);
 
 	if($resultdata) { //query was a success
 
@@ -60,7 +60,7 @@ if( isset($_GET['conf']) && strlen($_GET['conf']) < 10) {
 
 			    echo "<TR><TD>&nbsp;<TD colspan=4>Move User to: ";
 				echo "<select name=openhouseid>";
-				$result = mysql_query("select EVENT_NAME, EVENT_DATE, MAX_GUESTS, ID from openhouse_dates order by EVENT_DATE DESC", $db_conn);
+				$result = mysql_query("select EVENT_NAME, EVENT_DATE, MAX_GUESTS, ID from learntocurl_dates order by EVENT_DATE DESC", $db_conn);
 				if($result) { //query was a success
 					while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
 						$selected = "";

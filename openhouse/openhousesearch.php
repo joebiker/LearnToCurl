@@ -8,7 +8,7 @@ if(isset($_REQUEST['search'])) {
 	$s = trim($_REQUEST['search']);
 	echo $s;
 	
-	$query = "select id from openhouse oh, openhouse_dates d where (group_name like '$s' or confirmation like '$s') and d.id = oh.openhouse_id";
+	$query = "select id from learntocurl oh, learntocurl_dates d where (group_name like '$s' or confirmation like '$s') and d.id = oh.openhouse_id";
 	$result = mysql_query($query, $db_conn);
 	echo $query;
 	if($result) { //query was a success

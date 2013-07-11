@@ -27,7 +27,7 @@ include "common.php";
 include "database.php";
 $db_conn = connect_db($DB_SERVER, $DB_USER, $DB_PASS, $DB_NAME);	// from include
 
-$result = mysql_query("select EVENT_NAME, EVENT_DATE, MAX_GUESTS, ID from openhouse_dates where EVENT_DATE > adddate(now(),-1) order by EVENT_DATE asc", $db_conn);
+$result = mysql_query("select EVENT_NAME, EVENT_DATE, MAX_GUESTS, ID from learntocurl_dates where EVENT_DATE > adddate(now(),-1) order by EVENT_DATE asc", $db_conn);
 if($result) { //query was a success
 	while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
 		$phpdate = strtotime( $row[1] );

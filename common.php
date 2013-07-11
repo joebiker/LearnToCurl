@@ -44,7 +44,7 @@ function calculatePrice($adults, $juniors, $with_shipping) {
 
 function registeredOpenhouseCount($id) {
 	// Check if registration is open for given event......
-	$query = "select (select max_guests from openhouse_dates where ID = ".$id.") as MAX, (select sum(group_adults+group_juniors) from openhouse where OPENHOUSE_ID = ".$id." and PAID_DOLLARS > 0 ) as PLAYERS";
+	$query = "select (select max_guests from learntocurl_dates where ID = ".$id.") as MAX, (select sum(group_adults+group_juniors) from learntocurl where OPENHOUSE_ID = ".$id." and PAID_DOLLARS > 0 ) as PLAYERS";
 	
 	$spaceavail = mysql_query($query);
 	if( !$spaceavail ) {
@@ -79,7 +79,7 @@ function availableOpenhouseCount($id) { // displays errors
 // $confirmation - record to exclude from count
 function availableOpenhouseCountErrorMinus($id, $bError, $confirmation) {
 	// Check if registration is open for given event......
-	$query = "select (select max_guests from openhouse_dates where ID = ".$id.") as MAX, (select sum(group_adults+group_juniors) from openhouse where OPENHOUSE_ID = ".$id." and PAID_DOLLARS > 0 and CONFIRMATION != '".$confirmation."') as PLAYERS";
+	$query = "select (select max_guests from learntocurl_dates where ID = ".$id.") as MAX, (select sum(group_adults+group_juniors) from learntocurl where OPENHOUSE_ID = ".$id." and PAID_DOLLARS > 0 and CONFIRMATION != '".$confirmation."') as PLAYERS";
 	//echo "<div class='error'>" .$query. "</DIV>";
 	
 	$spaceavail = mysql_query($query);
@@ -105,7 +105,7 @@ function availableOpenhouseCountErrorMinus($id, $bError, $confirmation) {
 
 function attendedOpenhouseCountError($id, $bError) {
 	// Check if registration is open for given event......
-	$query = "select sum(group_adults+group_juniors) from openhouse where OPENHOUSE_ID = ".$id." and PAID_DOLLARS > 0 and ATTENDED = 1";
+	$query = "select sum(group_adults+group_juniors) from learntocurl where OPENHOUSE_ID = ".$id." and PAID_DOLLARS > 0 and ATTENDED = 1";
 	//echo "<div class='error'>" .$query. "</DIV>";
 	
 	$attended = mysql_query($query);
@@ -150,7 +150,7 @@ function connect_db($server, $user, $pass, $db_name) {
 // $confirmation - record to exclude from count
 function setFlag($confirmation, $field, $value) {
 	// update record based on Confirmation number
-	$query = "update openhouse SET $field = $value where CONFIRMATION = '".$confirmation."' ";
+	$query = "update learntocurl SET $field = $value where CONFIRMATION = '".$confirmation."' ";
 	//echo "<div class='error'>" .$query. "</DIV>";
 	
 	$result = mysql_query($query);

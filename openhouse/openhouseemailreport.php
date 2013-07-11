@@ -26,7 +26,7 @@
 	echo 'Event: <select name="openhouseid" id="openhouseid">';
 	echo '<option value=""></option>\n';
 
-	$events_result = mysql_query("select ID, EVENT_DATE, EVENT_NAME from openhouse_dates order by EVENT_DATE DESC", $db_conn);
+	$events_result = mysql_query("select ID, EVENT_DATE, EVENT_NAME from learntocurl_dates order by EVENT_DATE DESC", $db_conn);
 	if($events_result) { //query was a success
 		while ($row = mysql_fetch_array($events_result, MYSQL_BOTH)) {
 			if( $modify_event_id == $row[0] ) $selected = "selected"; else $selected = "";
@@ -51,14 +51,7 @@ if(isset($_REQUEST['search'])) {
 	$id = trim($_REQUEST['openhouseid']);
 		
 	// Basic Search Query
-	$query = "select group_name, email from openhouse where openhouse_id = $id ";
-	
-	$a = explode(":", $s);
-	if( count($a) > 1) {
-		echo "bad query hit ";
-		$query = "select id, first, last, address1, city, state, zip, country, homephone, cellphone, email, SEX, DOB, experience, comments, team from members where id IN (select member from attributes a, attribute_lnk l where a.id = l.attribute and a.attribute like '%$a[1]%') order by last ASC";
-	}
-
+	$query = "select group_name, email from learntocurl where openhouse_id = $id ";
 	$result = mysql_query($query, $db_conn);
 	// echo $query; // DEBUG
 	if($result) {
