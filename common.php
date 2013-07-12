@@ -26,7 +26,6 @@ function createConfirmation($group, $number) {
 	return $conf;
 }
 
-
 //////// August 2009 $10 for adult, $5 for junior, $20 for family (defined 1 or 2 adults and up to 4 juniors), $shipping = 1 include in price, 0. Don't include.
 //////// UPDATE Database has prices in it, however for quick edit, I will modify this file instead. $20/person $10/junior $40/famil.y
 function calculatePrice($adults, $juniors, $with_shipping) {
@@ -39,6 +38,26 @@ function calculatePrice($adults, $juniors, $with_shipping) {
 		$price += $shipping;
 		
 	return $price .".00";
+}
+
+// no delay -  Typically for Admin display lists
+function getAvailableOpenhouses() {
+	return getAvailableOpenhouses_delay(0);
+}
+
+// build in delay -- up to 800 hours+/-
+// $hours (int) = number of hours ahread of time to limit the displayed events
+function getAvailableOpenhouses_delay($hours) {
+	// uses cast to int: "(int)$hours" -- will round down any fraction.
+	$openhouses = array();
+	$query = "select ID, EVENT_NAME, EVENT_DATE, EVENT_TYPE, MAX_GUESTS from learntocurl_dates where EVENT_DATE > addtime(now(),'".(int)$hours.":0:0') order by EVENT_DATE asc";
+	$result = mysql_query($query);
+	if(($result!=false) ) { //query was a success and returned results
+		while ($row = mysql_fetch_assoc($result)) {
+			$openhouses[]=$row;
+		}
+	}
+	return $openhouses;
 }
 
 
@@ -135,13 +154,14 @@ function connect_db($server, $user, $pass, $db_name) {
 
 	$db_conn = mysql_connect($server, $user, $pass);
 	if( !$db_conn ) {
-		die ("<div class='error'>Could not connect to database (".$server."). " . mysql_error(). "</div>");
+		die ("<div class='error'>Could not communicate with database <span name='$server' title='".mysql_error()."'>server</span>. Please try again later.</div>");
 		//else { echo "Query did not make it<BR>"; echo mysql_error($db_conn); }
 	}
 
 	$db_selected = mysql_select_db($db_name, $db_conn);
 	if (!$db_selected) {
-	    die ('Can\'t use foo : ' . mysql_error());
+	    echo "<div class='error'>Could not connect to <span name='$db_name' title='".mysql_error()."'>database</span>. Please try again later.</div>";
+		// die ('Can\'t use foo : ' . mysql_error());
 	}
 
 	return $db_conn;

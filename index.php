@@ -13,12 +13,12 @@
 <h1>Learn to Curl</h1>
 <hr />
 
-<h3>What to expect at an Learn to Curl...</h3>
+<h3>What to expect at a Learn to Curl</h3>
  <p>Set aside about 2 hours to learn to curl.  
  It all starts off with a brief off ice instruction including curling terminology.
  Once on the ice, instructors will go over the basics of curling including throwing a stone and sweeping. 
- Participants are urged to wear layered, loose clothing and sneakers. All other equipment is provided.
- Be sure to arrive 15 mins before the scheduled start time of your Learn to Curl.
+ Participants are urged to wear layered, loose clothing and clean sneakers. All other equipment is provided.
+ Be sure to arrive 15 mins before the scheduled start time.
  </p>
 
 <h3>Sessions:</h3>
@@ -27,24 +27,19 @@ include "common.php";
 include "database.php";
 $db_conn = connect_db($DB_SERVER, $DB_USER, $DB_PASS, $DB_NAME);	// from include
 
-$result = mysql_query("select EVENT_NAME, EVENT_DATE, MAX_GUESTS, ID from learntocurl_dates where EVENT_DATE > adddate(now(),-1) order by EVENT_DATE asc", $db_conn);
-if($result) { //query was a success
-	while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
-		$phpdate = strtotime( $row[1] );
-		$remain = availableOpenhouseCount($row[3]);
-		if ($remain < 0 ) $remain = 0 ;
-	    printf (date('g:i A - l F j, Y',$phpdate) . " -  (". $remain." spaces)  <BR/>");
+$myarray = getAvailableOpenhouses_delay(2);
+if( count($myarray) >0 ) {
+	echo "\n<table class=eventList>";
+	foreach($myarray as $event) {
+		$remain = availableOpenhouseCount($event['ID']);
+		echo "\n<TR id='".$event['EVENT_TYPE'].$event['ID']."'><TD>".date('g:i A - l F j, Y',strtotime($event["EVENT_DATE"]))."&nbsp;</TD><TD>".$event["EVENT_NAME"]." (". $remain." spaces)</TD></TR>";
 	}
+	echo "\n</table>";
+	echo "<p><font color=red size='+1'><a href='openhouse/'>Sign up</a> to reserve your space! </font></p>";
 	
-	$sessions_avail = mysql_num_rows ( $result );
-	if ($sessions_avail == 0) {
-		printf ("<B>No Learn to Curl sessions currently scheduled.</B> Check back soon! You can also sign up for our email notification list. Look for the sign up form on this page.<BR/>");
-	}
-	else {
-		printf ("<p><font color=red size='+1'><a href='openhouse/'>Sign up</a> to reserve your space! </font></p>");
-	}
+} else { // none available
+	printf ("<P><B>No Learn to Curl sessions currently scheduled.</B> Check back soon! You can also sign up for our email notification list. Look for the sign up form on this page.<BR/></P>");
 }
-
 ?>
 
 <hr />
