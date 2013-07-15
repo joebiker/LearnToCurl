@@ -89,7 +89,7 @@ if( isset($_POST['type']) && "newopenhouse" == $_POST['type'] ) { // continue wi
 	$insert = mysql_query("insert into learntocurl (group_name, email, group_adults, group_juniors, confirmation, openhouse_id, learn_refer, reg_refer, user_refer, create_browser, create_ip) values('".htmlspecialchars($_POST['groupname'])."', '".htmlspecialchars($_POST['email'])."', ".$_POST['adults'].", ".$_POST['juniors'].", '".$confirmation_number."', '".$_POST['openhouseid']."', '".$learn_refer."', '".$reg_refer."', '".$user_refer."', '".$_SERVER['HTTP_USER_AGENT']."', '".$_SERVER['REMOTE_ADDR']."' ) ", $db_conn);
 	
 	if( $insert ) {
-		echo "<div class='info'>Reservation is not gauranteed until payment is received!</div>";
+		echo "<div class='success'>Reservation is not gauranteed until payment is received!</div>";
 	}
 	else {
 		die ("<div class='error'>An error occured saving your information, please try again later. ".mysql_error()."</div>");
@@ -239,22 +239,22 @@ else {
 <?php
 
 function payWithPayPal($confirmation_number, $openhousedate) {
-	global $PP_FORM_POST,$PAYPAL_USER, $PAYPAL_PWD,$PAYPAL_SIGNATURE,$PAYPAL_CANCELURL,$PAYPAL_RETURN,$PAYPAL_NOTIFY_URL,$PAYPAL_BUSINESS;
 	?>
-<form action="<?php echo $PP_FORM_POST; ?>" method="post">
-<input type=hidden name=USER value="<?php echo $PAYPAL_USER; ?>">
-<input type=hidden name=PWD value="<?php echo $PAYPAL_PWD; ?>">
-<input type=hidden name=SIGNATURE value="<?php echo $PAYPAL_SIGNATURE; ?>">
-<input type=hidden name=CANCELURL value="<?php echo $PAYPAL_CANCELURL; ?>">
-<INPUT TYPE="hidden" NAME="RETURN" value="<?php echo $PAYPAL_RETURN; ?>">
+<!-- form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post" -->
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type=hidden name=USER value="">
+<input type=hidden name=PWD value="">
+<input type=hidden name=SIGNATURE value="">
+<input type=hidden name=CANCELURL value="">
+<INPUT TYPE="hidden" NAME="RETURN" value="">
 <!-- above line will be used for Auto Return. Needs auth_token.  Before this was enabled, paypal had a button that said return to website (used this link) -->
-<INPUT TYPE="hidden" NAME="notify_url" value="<?php echo $PAYPAL_NOTIFY_URL; ?>">
+<INPUT TYPE="hidden" NAME="notify_url" value="">
 <input type=hidden name=custom value="<?php echo $_POST["groupname"]; ?>">
 <input type=hidden name=invoice value="<?php echo $confirmation_number; ?>">
 
 Payment Due: <span class='userinput'><?php echo "$". calculatePrice($_POST["adults"], $_POST["juniors"], 1) ?></span>
 <br><input type="hidden" name="cmd" value="_xclick">
-<input type="hidden" name="business" value="<?php echo $PAYPAL_BUSINESS; ?>">
+<input type="hidden" name="business" value="">
 <input type="hidden" name="lc" value="US">
 <input type="hidden" name="item_name" value="<?php echo $_POST["groupname"]; ?> - <?php echo $openhousedate; ?> (group of <?php echo $_POST["adults"] + $_POST["juniors"]; ?>) <?php echo $confirmation_number; ?>">
 <input type="hidden" name="button_subtype" value="services">

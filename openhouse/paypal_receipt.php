@@ -9,7 +9,7 @@
 	$req = 'cmd=_notify-synch';
 	
 	$tx_token = $_GET['tx'];
-	$auth_token = $PAYPAL_AUTH_TX;
+	$auth_token = "";
 	$req .= "&tx=$tx_token&at=$auth_token";
 	// post back to PayPal system to validate
 	$header .= "POST /cgi-bin/webscr HTTP/1.0\r\n";
