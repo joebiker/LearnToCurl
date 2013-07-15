@@ -44,3 +44,12 @@ body
     font-size: 10pt;
     background-color: lightyellow;
   }
+
+.userinput
+  {
+    color: DarkSlateBlue;
+    text-align: left;
+    font-family: sans-serif;
+    list-style-type: disc;
+    font-size: 20pt;
+  }
