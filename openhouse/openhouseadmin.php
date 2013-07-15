@@ -5,6 +5,8 @@
 	<script src="//ajax.googleapis.com/ajax/libs/mootools/1.4.5/mootools-yui-compressed.js"></script>
 	<script type="text/javascript" language="Javascript">
 function toggleCheck($conf, $field, $checkb, $msgspan) {
+	//make the ajax call, replace text
+	//alert ( $checkb.checked );
 	if($checkb.checked==true) {
 		$value = 'on';
 	} 
@@ -32,14 +34,31 @@ function toggleCheck($conf, $field, $checkb, $msgspan) {
 
 
 function editOpenHouse($var0,$var1,$var2,$var3,$var4,$var5) {
+	// openhouse_id,  display name,  date/time,  max guests
 	document.createopenhouse.type.value = "editopenhouse";
+	//document.getElementById('id').value = $var0;
 	document.createopenhouse.id.value = $var0;
+	//document.getElementById('newname').value = $var1;
 	document.createopenhouse.newname.value = $var1;
+	//document.getElementById('newdate').value = $var2;
 	document.createopenhouse.newdate.value = $var2;
+	//document.getElementById('newmax').value = $var3;
 	document.createopenhouse.newmax.value = $var3;
 	document.createopenhouse.newcomments.value = $var4;
 	document.createopenhouse.newtype.value = $var5;
+	//document.getElementById('submitbutton').value = "Edit Open House Name/Max Guests";
 	document.createopenhouse.submitbutton.value = "Edit Open House Name/Max Guests";
+	// //setCheckedValue(document.getElementById('experience'), $var13);
+	//setCheckedValue(document.editrecord.experience, $var13);
+	//document.getElementById('shareinfo').checked = ($var16 == "1" )?true : false;
+	//document.getElementById('adminuser').checked = ($var17 == "1" )?true : false;
+	// //document.getElementById('attributes').innerHTML = $attributes;
+	// //alert($attributes[1]);
+//	$writethis = "";
+//	for (var i = 0; i < $attributes.length; i++){ 
+//		$writethis += $attributes[i] + " <A HREF='javascript: void(0); ' onclick='confirmPost(\"" + $attributes[i] + "\");'>x</A>, "; 
+//	}
+//	document.getElementById('attributes').innerHTML = $writethis;
 	
 	return;	
 }
@@ -255,6 +274,23 @@ if($result && isset($_GET['view']) ) { //query was a success
 	    echo "</td></tr></table><hr>";
 	}
 }
+//mysql_free_result($result);// 312
+
+/*
+echo "<h3>Registered Users</h3>";
+echo "<table class='datatable'>";
+echo "<TR><TH>Group Name<TH>Size<TH>Email<TH>Paid Dollars<TH>Paid Type<TH>Event Date<TH>Event Name<TH>Max Guests</TR>";
+
+$result = mysql_query("select group_name, group_adults+group_juniors, email, paid_dollars, paid_type, EVENT_DATE, EVENT_NAME, MAX_GUESTS from openhouse, openhouse_dates where id = openhouse_id order by EVENT_DATE ASC, group_name", $db_conn);
+if($result) { //query was a success
+	while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
+	    printf ("<tr><td>$row[0] &nbsp;<td>$row[1] &nbsp;<td>$row[2] &nbsp;<td>$row[3] &nbsp;<td>$row[4] &nbsp;<td>$row[5] &nbsp;<td>$row[6] &nbsp;<td>$row[7] &nbsp;</tr>");
+	}
+}
+mysql_free_result($result);
+echo "</table> <br>";
+*/
+
 ?>
 
 <div id=search>

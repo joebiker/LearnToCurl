@@ -156,12 +156,56 @@ IT, AND SIGN IT FREELY AND VOLUNTARILY WITHOUT ANY INDUCEMENT.</strong>
 
 <table border=0 cellpadding="1">
 <tbody><tr><td>x___________________________<br><div style="font-size: 10px;">&nbsp;&nbsp;PARTICIPANT'S SIGNATURE</div>
-</td><td valign="top">Age:_____<BR><div style="font-size: 10px;">(if under 18)</div></td><td valign="top">Date Signed:____________</td></tr>
+    </td><td valign="top">Age:_____<BR><div style="font-size: 10px;">(if under 18)</div></td><td valign="top">Date Signed:____________</td></tr>
+    <?php /*
+    if( $reg_details[2] + $reg_details[3] >= 2 ) {  ?>
+	    <tr><td>x___________________________<br><div style="font-size: 10px;">&nbsp;&nbsp;PARTICIPANT'S SIGNATURE </div>
+	    </td><td valign="top">Age:_____<BR><div style="font-size: 10px;">(if under 18)</div></td><td valign="top">Date Signed:____________</td></tr>
+	<?php }
+    if( $reg_details[2] + $reg_details[3] >= 3 ) {  ?>
+	    <tr><td>x___________________________<br><div style="font-size: 10px;">&nbsp;&nbsp;PARTICIPANT'S SIGNATURE </div>
+	    </td><td valign="top">Age:_____<BR><div style="font-size: 10px;">(if under 18)</div></td><td valign="top">Date Signed:____________</td></tr>
+	<?php }
+    if( $reg_details[2] + $reg_details[3] >= 4 ) {  ?>
+	    <tr><td>x___________________________<br><div style="font-size: 10px;">&nbsp;&nbsp;PARTICIPANT'S SIGNATURE </div>
+	    </td><td valign="top">Age:_____<BR><div style="font-size: 10px;">(if under 18)</div></td><td valign="top">Date Signed:____________</td></tr>
+	<?php }
+    if( $reg_details[2] + $reg_details[3] >= 5 ) {  ?>
+	    <tr><td>x___________________________<br><div style="font-size: 10px;">&nbsp;&nbsp;PARTICIPANT'S SIGNATURE </div>
+	    </td><td valign="top">Age:_____<BR><div style="font-size: 10px;">(if under 18)</div></td><td valign="top">Date Signed:____________</td></tr>
+	<?php }
+    if( $reg_details[2] + $reg_details[3] >= 6 ) {  ?>
+	    <tr><td>x___________________________<br><div style="font-size: 10px;">&nbsp;&nbsp;PARTICIPANT'S SIGNATURE </div>
+	    </td><td valign="top">Age:_____<BR><div style="font-size: 10px;">(if under 18)</div></td><td valign="top">Date Signed:____________</td></tr>
+	<?php } */ ?>
+	
 <tr><td colspan="3">Postal address_______________________________________________________</td></tr>
 <tr><td valign="top">Telephone. #________________
     </td><td colspan="2">Email address:__________________________<br><div style="font-size: 10px;">
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(We will not distribute your addresses)</div></td></tr>
 </tbody></table>
+
+<!-- Google Code for Open House Registration Conversion Page -->
+<script type="text/javascript">
+<!--
+var google_conversion_id = 1045646227;
+var google_conversion_language = "en";
+var google_conversion_format = "3";
+var google_conversion_color = "ffffff";
+var google_conversion_label = "mk_YCJeRqwEQk5fN8gM";
+var google_conversion_value = 0;
+if ($1.00) {
+  google_conversion_value = $1.00;
+}
+//-->
+</script>
+<script type="text/javascript" src="http://www.googleadservices.com/pagead/conversion.js">
+</script>
+<noscript>
+<div style="display:inline;">
+<img height="1" width="1" style="border-style:none;" alt="" src="http://www.googleadservices.com/pagead/conversion/1045646227/?value=$1.00&amp;label=mk_YCJeRqwEQk5fN8gM&amp;guid=ON&amp;script=0"/>
+</div>
+</noscript>
 		
 		<?php
 		

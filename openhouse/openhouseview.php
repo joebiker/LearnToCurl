@@ -35,13 +35,29 @@ function toggleCheck($conf, $field, $checkb, $msgspan) {
 function editOpenHouse($var0,$var1,$var2,$var3,$var4,$var5) {
 	// openhouse_id,  display name,  date/time,  max guests
 	document.createopenhouse.type.value = "editopenhouse";
+	//document.getElementById('id').value = $var0;
 	document.createopenhouse.id.value = $var0;
+	//document.getElementById('newname').value = $var1;
 	document.createopenhouse.newname.value = $var1;
+	//document.getElementById('newdate').value = $var2;
 	document.createopenhouse.newdate.value = $var2;
+	//document.getElementById('newmax').value = $var3;
 	document.createopenhouse.newmax.value = $var3;
 	document.createopenhouse.newcomments.value = $var4;
 	document.createopenhouse.newtype.value = $var5;
+	//document.getElementById('submitbutton').value = "Edit Open House Name/Max Guests";
 	document.createopenhouse.submitbutton.value = "Edit Open House Name/Max Guests";
+	// //setCheckedValue(document.getElementById('experience'), $var13);
+	//setCheckedValue(document.editrecord.experience, $var13);
+	//document.getElementById('shareinfo').checked = ($var16 == "1" )?true : false;
+	//document.getElementById('adminuser').checked = ($var17 == "1" )?true : false;
+	// //document.getElementById('attributes').innerHTML = $attributes;
+	// //alert($attributes[1]);
+//	$writethis = "";
+//	for (var i = 0; i < $attributes.length; i++){ 
+//		$writethis += $attributes[i] + " <A HREF='javascript: void(0); ' onclick='confirmPost(\"" + $attributes[i] + "\");'>x</A>, "; 
+//	}
+//	document.getElementById('attributes').innerHTML = $writethis;
 	
 	return;	
 }

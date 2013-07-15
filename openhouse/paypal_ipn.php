@@ -2,9 +2,9 @@
 
 function recordPayment() {
 	$filename = 'ipn_log.txt';
-	$email_from_admin = "joe@abc.com";  // Email is sent from this persom -- treasurer or l2c admin
+	$email_from_admin = "joebiker@gmail.com";  // Email is sent from this persom -- treasurer or l2c admin
 	// This is where errors are sent
-	$toAdmin = "joe@abc.com"; // seperate by commas if you want multiple emails
+	$toAdmin = "joebiker@gmail.com"; // seperate by commas if you want multiple emails
 	$handle = fopen($filename, 'a');
 	
 			// Check the payment_status is Completed
@@ -97,7 +97,8 @@ function recordPayment() {
 				    'Reply-To: $email_from_admin' . "\r\n" . // If you want different address
 				    'X-Mailer: PHP/' . phpversion();
 				
-				$webconfirm = ""; // URL
+				// http://www.evergreencurling.com/learn/openhouse/register.php?type=editopenhouse&confnumber=CXNG3
+				$webconfirm = "http://www.evergreencurling.com/learn/openhouse/register.php?type=editopenhouse&confnumber=".$lookup;
 				// The message
 				$message = "Thank you, " . mysql_result($result, 0, 0) . ", \n\nYour payment has been received: $".$payment."\n\nYour confirmation number is: ".$lookup.".\n".$webconfirm."\n\n\n";  // additional messages can be written here in the final confirmation message.
 				

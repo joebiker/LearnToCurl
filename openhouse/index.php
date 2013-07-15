@@ -6,7 +6,55 @@
 	<link href="../learntocurl.css" rel="stylesheet" type="text/css" />
 
 	<script src="//ajax.googleapis.com/ajax/libs/mootools/1.4.5/mootools-yui-compressed.js"></script>
+	<script src="jquery-ui-1.10.3/jquery-1.9.1.js"></script>
+	<script src="jquery-ui-1.10.3/ui/jquery.ui.core.js"></script>
 	<script language="Javascript" type="text/javascript">
+	
+	$(document).ready(function(){
+	    $("#parent1").css("display","none");
+	    $(".field").css("display","none");
+	    $("#extra_message").css("display","none");
+	    $('.junior').hide();
+	    $(".aboveage1").click(function(){
+	        if ($('input[name=age1]:checked').val() == "No" ) {
+	            $("#parent1").slideDown("fast"); //Slide Down Effect
+	        } else {
+	            $("#parent1").slideUp("fast");  //Slide Up Effect
+	        }
+	    });
+	    $("#adults").change(function(){
+		    $('.field').hide();
+		    var selection = $('#adults').val();
+		    if(selection>=2) {
+		            $('#a2').slideDown("fast");
+		            $('#extra_message').slideDown("slow");
+	        }
+		    if(selection>=3)
+		            $('#a3').slideDown("fast");
+		    if(selection>=4)
+		            $('#a4').slideDown("fast");
+		    if(selection>=5)
+		            $('#a5').slideDown("fast");
+		    if(selection>=6)
+		            $('#a6').slideDown("fast");
+		    if(selection>=7)
+		            $('#a7').slideDown("fast");
+		    if(selection>=8)
+		            $('#a8').slideDown("fast");
+		});
+		$("#juniors").change(function(){
+		    $('.junior').hide();
+		    var selection = $('#juniors').val();
+		    if(selection>=1)
+		            $('#j1').show();
+		    if(selection>=2)
+		            $('#j2').show();
+		    if(selection>=3)
+		            $('#j3').show();
+		    if(selection>=4)
+		            $('#j4').show();
+		});
+	});
 
 function checkReg($id) {
 	//make the ajax call, replace text
@@ -124,9 +172,42 @@ if( isset($_REQUEST['type']) && "editopenhouse" == $_REQUEST['type'] ) {  // edi
 <TD><span id="openspace"></span></TR>
 
 <TR>
-<TD>Adult Leader 
-<TD><input type="text" name="groupname" id="groupname" value="<?php echo $modify_group; ?>" size="30">
-<TD>Email <input type="text" name="email" id="email"  value="<?php echo $modify_email; ?>" size="30"></TR>
+<TD>Adult Leader <TD><input type="text" name="groupname[]" id="groupname" value="<?php echo $modify_group; ?>" size="30"><td>Email <input type="text" name="email[]" id="email"  value="<?php echo $modify_email; ?>" size="30"></TR>
+<TR id="a2" class="field">
+<TD>Adult (2nd) <font color=red size=-1><sup>*</sup></font><TD><input type="text" name="groupname[]" id="groupname2"  value="<?php echo '' ?>" size="30"><td>Email <input type="text" name="email[]" id="email2"  value="<?php echo '' ?>" size="30"></tr>
+<TR id="a3" class="field">
+<TD>Adult (3rd) <font color=red size=-1><sup>*</sup></font><TD><input type="text" name="groupname[]" id="groupname3"  value="<?php echo '' ?>" size="30"><td>Email <input type="text" name="email[]" id="email3"  value="<?php echo '' ?>" size="30"></tr>
+<TR id="a4" class="field">
+<TD>Adult (4th) <font color=red size=-1><sup>*</sup></font><TD><input type="text" name="groupname[]" id="groupname4"  value="<?php echo '' ?>" size="30"><td>Email <input type="text" name="email[]" id="email4"  value="<?php echo '' ?>" size="30"></tr>
+<TR id="a5" class="field">
+<TD>Adult (5th) <font color=red size=-1><sup>*</sup></font><TD><input type="text" name="groupname[]" id="groupname5"  value="<?php echo '' ?>" size="30"><td>Email <input type="text" name="email[]" id="email5"  value="<?php echo '' ?>" size="30"></tr>
+<TR id="a6" class="field">
+<TD>Adult (6th) <font color=red size=-1><sup>*</sup></font><TD><input type="text" name="groupname[]" id="groupname6"  value="<?php echo '' ?>" size="30"><td>Email <input type="text" name="email[]" id="email6"  value="<?php echo '' ?>" size="30"></tr>
+<TR id="a7" class="field">
+<TD>Adult (7th) <font color=red size=-1><sup>*</sup></font><TD><input type="text" name="groupname[]" id="groupname7"  value="<?php echo '' ?>" size="30"><td>Email <input type="text" name="email[]" id="email7"  value="<?php echo '' ?>" size="30"></tr>
+<TR id="a8" class="field">
+<TD>Adult (8th) <font color=red size=-1><sup>*</sup></font><TD><input type="text" name="groupname[]" id="groupname8"  value="<?php echo '' ?>" size="30"><td>Email <input type="text" name="email[]" id="email8"  value="<?php echo '' ?>" size="30"></tr>
+<TR id="j1" class="junior">
+<TD>Junior (1st) <font color=red size=-1><sup>*</sup></font><TD><input type="text" name="juniorname[]" id="juniorname1"  value="<?php echo '' ?>" size="30"><td> - </tr>
+<TR id="j2" class="junior">
+<TD>Junior (2nd) <font color=red size=-1><sup>*</sup></font><TD><input type="text" name="juniorname[]" id="juniorname2"  value="<?php echo '' ?>" size="30"><td> - </tr>
+<TR id="j3" class="junior">
+<TD>Junior (3rd) <font color=red size=-1><sup>*</sup></font><TD><input type="text" name="juniorname[]" id="juniorname3"  value="<?php echo '' ?>" size="30"><td> - </tr>
+<TR id="j4" class="junior">
+<TD>Junior (4th) <font color=red size=-1><sup>*</sup></font><TD><input type="text" name="juniorname[]" id="juniorname4"  value="<?php echo '' ?>" size="30"><td> - </tr>
+<TR id="j5" class="junior">
+<TD>Junior (5th) <font color=red size=-1><sup>*</sup></font><TD><input type="text" name="juniorname[]" id="juniorname5"  value="<?php echo '' ?>" size="30"><td> - </tr>
+<TR id="j6" class="junior">
+<TD>Junior (6th) <font color=red size=-1><sup>*</sup></font><TD><input type="text" name="juniorname[]" id="juniorname6"  value="<?php echo '' ?>" size="30"><td> - </tr>
+<TR id="j7" class="junior">
+<TD>Junior (7th) <font color=red size=-1><sup>*</sup></font><TD><input type="text" name="juniorname[]" id="juniorname7"  value="<?php echo '' ?>" size="30"><td> - </tr>
+<TR id="j8" class="junior">
+<TD>Junior (8th) <font color=red size=-1><sup>*</sup></font><TD><input type="text" name="juniorname[]" id="juniorname8"  value="<?php echo '' ?>" size="30"><td> - </tr>
+
+<TR id=extra_message class=info>
+<TD colspan=3> <font color=red size=-1><sup>*</sup></font>Except for the <i>Adult Leader</i>, name and email addresses can be changed later.
+</TD></TR>
+
 <TR>
 <TD>How many adults 
 <TD><select name="adults" id="adults">
@@ -137,7 +218,10 @@ if( isset($_REQUEST['type']) && "editopenhouse" == $_REQUEST['type'] ) {  // edi
 <option <?php if($modify_adults == 4) echo "selected"; ?>>4</option>
 <option <?php if($modify_adults == 5) echo "selected"; ?>>5</option>
 <option <?php if($modify_adults == 6) echo "selected"; ?>>6</option>
+<option <?php if($modify_adults == 7) echo "selected"; ?>>7</option>
+<option <?php if($modify_adults == 8) echo "selected"; ?>>8</option>
 </select> <TD></TR>
+
 <TR>
 <TD>21 yrs old or younger 
 <td><select name="juniors" id="juniors">
@@ -186,10 +270,52 @@ How did you hear about our Learn to Curl Event? <input type=text name="user_refe
 </TABLE>
 </fieldset>
 <P>Note: "You are guaranteed your spot only after submitting payment"</P>
+<!-- Plan on arriving 20 minutes prior to your scheduled start time. -->
+<?php
+
+$cookie_type = "openh_refer";
+$cookie_data = $_COOKIE[$cookie_type];
+$reg_refer   = getenv("HTTP_REFERER");
+
+//send along with registration
+echo '<input type=hidden name="learn_refer" value="'.$cookie_data.'">';
+echo '<input type=hidden name="reg_refer" value="'.$reg_refer.'">';
+
+
+?>
 </form>
 
+<hr>
+<!-- P> 
+We are no longer allowing modifications:
+
+If you need to modify your registration, please do so here.
+
+<form name="editregistration" ACTION="register.php" method="POST">
+<?php if( strlen($ERROR_MSG) > 0 ) echo "<DIV class='error'>".$ERROR_MSG ."</DIV>";
+?>
+<input type="hidden" name="type" value="editopenhouse">
+Confirmation Number <input type="text" name="confnumber"  size="10"><br>
+<input type="submit" value="Edit Registration">
+</form
+-->
+
+<?php  
+
+// echo ecc_current_year(); // works!
+
+if( $DEBUG ) {
+print("view cookie<BR>");
+
+echo $_COOKIE[$cookie_type];
+echo "<BR> now current refer:";
+$ref = getenv("HTTP_REFERER");
+echo $ref;
+}	
+?>
 </div>
 </div>
+
 
 </body>
 </html>
