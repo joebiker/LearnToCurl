@@ -2,14 +2,17 @@
 
 $DEBUG            = 0;
 $ERROR_MSG        = "";
-$FORM_PP_POST     = "https://www.paypal.com/cgi-bin/webscr"; 
-//$FORM_PP_POST     = "https://www.sandbox.paypal.com/cgi-bin/webscr"; // sandbox
-$BUSINESS_PP      = "money@abc.org";
+$PP_FORM_POST     = ""; // sandbox
+$PAYPAL_BUSINESS  = "";
+$PAYPAL_USER      = "";
+$PAYPAL_PWD       = "";
+$PAYPAL_SIGNATURE = "";
+$PAYPAL_CANCELURL = "";
+$PAYPAL_RETURN    = "";
+$PAYPAL_NOTIFY_URL= "";
 $PAYPAL_AUTH_TX   = "";
-$PAYPAL_IPN_URL   = "www.paypal.com";	// unused. Difficulties. something isn't right here. Just edit the file Sept-2009
-$PAYPAL_RCPT_URL  = "www.sandbox.paypal.com";	// ipn and receipt.  Not tested if receipt and ipn can be in sandbox at same time
-$MEMBER_PP_RETURN = "";
-$MEMBERSHIP_IPN   = "";
+$PAYPAL_IPN_URL   = "";	// UNUSED.  Difficulties. something isn't right here. Just edit the file Sept-2009
+$PAYPAL_RCPT_URL  = "";	// ipn and receipt.  Not tested if receipt and ipn can be in sandbox at same time
 
 
 //////// My Function to generate a confirmation number //////////////////////
@@ -154,13 +157,12 @@ function connect_db($server, $user, $pass, $db_name) {
 
 	$db_conn = mysql_connect($server, $user, $pass);
 	if( !$db_conn ) {
-		die ("<div class='error'>Could not communicate with database <span name='$server' title='".mysql_error()."'>server</span>. Please try again later.</div>");
-		//else { echo "Query did not make it<BR>"; echo mysql_error($db_conn); }
+		die ('<div class="error">Could not communicate with <span name="$server" title="'.mysql_error().'">database server</span>. Please try again later.</div>');
 	}
 
 	$db_selected = mysql_select_db($db_name, $db_conn);
 	if (!$db_selected) {
-	    echo "<div class='error'>Could not connect to <span name='$db_name' title='".mysql_error()."'>database</span>. Please try again later.</div>";
+	    echo '<div class="error">Could not connect to <span name="$db_name" title="'.mysql_error().'">database</span>. Please try again later.</div>';
 		// die ('Can\'t use foo : ' . mysql_error());
 	}
 

@@ -99,7 +99,7 @@ if( isset($_REQUEST['type']) && "editopenhouse" == $_REQUEST['type'] ) {  // edi
 
 <fieldset>
 <legend>
-	<img class="icon" width="16" height="16" alt="" src="../16ringHoriz.ico"/>
+	<img class="icon" width="16" height="16" alt="" src="../stone.ico"/>
 	<strong>Registration</strong>
 </legend> 
 <table cellpadding=2 cellspacing=0 border=0>
