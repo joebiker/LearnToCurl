@@ -2,18 +2,18 @@
 
 $DEBUG            = 0;
 $ERROR_MSG        = "";
-$PP_FORM_POST     = "";
-$PAYPAL_BUSINESS  = "";
-$PAYPAL_USER      = "";
-$PAYPAL_PWD       = "";
-$PAYPAL_SIGNATURE = "";
-$PAYPAL_CANCELURL = "";
-$PAYPAL_RETURN    = "";
-$PAYPAL_NOTIFY_URL= "";
+$PP_FORM_POST     = "https://www.sandbox.paypal.com/cgi-bin/webscr"; // sandbox
+$PAYPAL_BUSINESS  = "joebiker-facilitator@gmail.com";
+$PAYPAL_USER      = "joebiker-facilitator_api1.gmail.com";
+$PAYPAL_PWD       = "1373322733";
+$PAYPAL_SIGNATURE = "ALwSR0njMxqCl66dLcAXlqfM.9TBADul6C6AD9Lx.YbXirwWo5glc03c";
+$PAYPAL_CANCELURL = "http://www.evergreencurling.com/LearnToCurl/openhouse/index.php";
+$PAYPAL_RETURN    = "http://www.evergreencurling.com/LearnToCurl/openhouse/paypal_receipt.php";
+$PAYPAL_NOTIFY_URL= "http://www.evergreencurling.com/LearnToCurl/openhouse/paypal_ipn.php";
 $PAYPAL_AUTH_TX   = "";
-$PAYPAL_IPN_URL   = "";	// UNUSED.  Difficulties. something isn't right here. Just edit the file Sept-2009
-$PAYPAL_RCPT_URL  = "";	// ipn and receipt.  Not tested if receipt and ipn can be in sandbox at same time
-
+$PAYPAL_IPN_URL   = "www.paypal.com";	// UNUSED.  Difficulties. something isn't right here. Just edit the file Sept-2009
+$PAYPAL_RCPT_URL  = "www.sandbox.paypal.com";	// ipn and receipt.  Not tested if receipt and ipn can be in sandbox at same time
+//$webconfirm = "http://www.evergreencurling.com/learn/openhouse/register.php?type=editopenhouse&confnumber=".$lookup; // used in paypal_ipn.php
 
 //////// My Function to generate a confirmation number //////////////////////
 function createConfirmation($group, $number) {
