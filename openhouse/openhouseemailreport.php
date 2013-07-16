@@ -1,6 +1,9 @@
 <HTML>
+<HEAD>
+<title>Admin Report</title>
 <link href="admin.css" rel="stylesheet" type="text/css" />
 <title>Learn to Curl Email Report</title>
+</HEAD>
 <BODY>
 
 <div id="report_list" style="position:absolute; right: 10; top: 0px; color: green; z-index: 1;">
