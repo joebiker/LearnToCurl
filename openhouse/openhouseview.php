@@ -185,8 +185,17 @@ if( isset($_POST['type']) && (strlen($_POST['type']) > 4) ) {
 	<input type="hidden" value="Email Report">
 	</form>
 	
+	<?php 
+	$openhouseid = 0;
+	if ( isset($_REQUEST['openhouseid']) )
+		$openhouseid = $_REQUEST['openhouseid'];
+	if ( isset($_REQUEST['view']) )
+		$openhouseid = $_REQUEST['view'];
+	?>
+	
 	<ul>
-	<li><a href="openhouseemailreport.php">Email Report</a>
+	<li><a href="openhouseemailreport.php<?php if($openhouseid > 0 ) echo "?openhouseid=".$openhouseid;  ?>">Email Report</a>
+	<li><a href="openhousereferralreport.php">Referral Report</a>
 	</ul>
 </div>
 

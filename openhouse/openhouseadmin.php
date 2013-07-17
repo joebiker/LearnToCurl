@@ -179,6 +179,7 @@ if( isset($_POST['type']) && (strlen($_POST['type']) > 4) ) {
 	
 	<ul>
 	<li><a href="openhouseemailreport.php">Email Report</a>
+	<li><a href="openhousereferralreport.php">Referral Report</a>
 	</ul>
 </div>
 

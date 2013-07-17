@@ -12,12 +12,13 @@
 	</form>
 	
 	<ul>
+	<li><a href="openhousereferralreport.php">Referral Report</a>
 	<li><a href="openhouseadmin.php">back to Admin</a>
 	</ul>
 </div>
 
 
-<h3>Email Report</h3>
+<h1>Email Report</h1>
 <form method='post' name='category'>
 <input type="hidden" name="search" value="%">
 <?php
@@ -49,8 +50,8 @@ echo '</select>';
 
 <?php
 
-if(isset($_REQUEST['search'])) {
-	$s = trim($_REQUEST['search']);
+if(isset($_REQUEST['openhouseid'])) {
+	//$s = trim($_REQUEST['search']);
 	$id = trim($_REQUEST['openhouseid']);
 		
 	// Basic Search Query
