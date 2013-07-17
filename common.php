@@ -29,18 +29,41 @@ function createConfirmation($group, $number) {
 	return $conf;
 }
 
-//////// August 2009 $10 for adult, $5 for junior, $20 for family (defined 1 or 2 adults and up to 4 juniors), $shipping = 1 include in price, 0. Don't include.
-//////// UPDATE Database has prices in it, however for quick edit, I will modify this file instead. $20/person $10/junior $40/famil.y
-function calculatePrice($adults, $juniors, $with_shipping) {
-	$shipping = 1;
-	$price = ($adults * 20) + ($juniors * 10);
-	if(($price > 40) && ($adults <= 2)) {
-		$price = 40; // family
+//////// August 2009 $10 for adult, $5 for junior, $20 for family (defined 1 or 2 adults and up to 4 juniors), $with_shipping will be added to price if included
+//////// UPDATE Database has prices in it, however for quick edit, I will modify this file instead. $20/person $10/junior $40/family
+function calculatePrice($adults, $juniors, $with_shipping=0) {
+	$p_adult    = 20;
+	$p_junior   = 10;
+	$p_discount = 40;
+	$final_price = 0;
+	$disc_applied = 0;
+	
+	$remain_a = $adults;
+	$remain_j = $juniors;
+	
+	if( $p_discount > 0 ) {
+		while ($remain_a >= 1 && $remain_j >= 1 && !($remain_a == 1 && $remain_j == 1) ) {
+			// start discount
+			$disc_applied ++;
+			$remain_a = $remain_a - 2;
+			$remain_j = $remain_j - 4;
+			$final_price += $p_discount;
+		}
+	} // apply discounts
+	
+	while ( $remain_a > 0) {
+		$remain_a--;
+		$final_price += $p_adult;
 	}
-	if($with_shipping == 1) 
-		$price += $shipping;
-		
-	return $price .".00";
+	while ( $remain_j > 0) {
+		$remain_j--;
+		$final_price += $p_junior;
+	}
+	
+	if($with_shipping > 0) 
+		$final_price += $with_shipping;
+	
+	return $final_price .".00";
 }
 
 // no delay -  Typically for Admin display lists
