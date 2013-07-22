@@ -29,14 +29,22 @@ function createConfirmation($group, $number) {
 	return $conf;
 }
 
-//////// August 2009 $10 for adult, $5 for junior, $20 for family (defined 1 or 2 adults and up to 4 juniors), $with_shipping will be added to price if included
-//////// UPDATE Database has prices in it, however for quick edit, I will modify this file instead. $20/person $10/junior $40/family
-function calculatePrice($adults, $juniors, $with_shipping=0) {
-	$p_adult    = 20;
+// August 2009 $10 for adult, $5 for junior, $20 for family (defined 1 or 2 adults and up to 4 juniors), $with_shipping will be added to price if included
+function calculatePrice($id, $adults, $juniors, $with_shipping=0) {
+	$p_adult    = 20; // defaults
 	$p_junior   = 10;
 	$p_discount = 40;
 	$final_price = 0;
 	$disc_applied = 0;
+
+	// get prices from Database
+	$query = "select PRICE_ADULT, PRICE_JUNIOR, PRICE_DISC from learntocurl_dates where ID = ".$id;
+	$result = mysql_query($query);
+	if( $result==FALSE )
+		die('<div class="error">Could not execute <span name="mysql_error" title="'.mysql_error().'">request for price information</span>. </div>');
+	$p_adult    = mysql_result($result, 0, 0);
+	$p_junior   = mysql_result($result, 0, 1);
+	$p_discount = mysql_result($result, 0, 2);
 	
 	$remain_a = $adults;
 	$remain_j = $juniors;
@@ -63,7 +71,7 @@ function calculatePrice($adults, $juniors, $with_shipping=0) {
 	if($with_shipping > 0) 
 		$final_price += $with_shipping;
 	
-	return $final_price .".00";
+	return $final_price;
 }
 
 // no delay -  Typically for Admin display lists
@@ -89,62 +97,49 @@ function getAvailableOpenhouses_delay($hours) {
 
 function registeredOpenhouseCount($id) {
 	// Check if registration is open for given event......
-	$query = "select (select max_guests from learntocurl_dates where ID = ".$id.") as MAX, (select sum(group_adults+group_juniors) from learntocurl where OPENHOUSE_ID = ".$id." and PAID_DOLLARS > 0 ) as PLAYERS";
+	$query = "select coalesce(sum(group_adults+group_juniors),0) as REG from learntocurl where OPENHOUSE_ID = ".$id." and PAID_DOLLARS > 0";
 	
 	$spaceavail = mysql_query($query);
-	if( !$spaceavail ) {
+	if( $spaceavail==FALSE ) {
 		if($bError)
-			die("<div class='error'>Could not execute request for Open House availability: " . mysql_error(). "</div>");
+			die('<div class="error">Could not execute <span name="mysql_error" title="'.mysql_error().'">request for event registration</span>. </div>');
 		else 
 			die();
 	}
-	$stringresult = mysql_result($spaceavail, 0, 0);
-	if( !$stringresult) {
-		if($bError)
-			die ("<div class='error'>Cannot retrieve Open House availability: ".mysql_error()."</div>");
-		else 
-			die();
-	}
-	$max_guests = $stringresult;
-	$reg_players  = mysql_result($spaceavail, 0, 1)?mysql_result($spaceavail, 0, 1):0;
-	
+	$reg_players = mysql_result($spaceavail, 0, 0);	
 	return $reg_players;
 }
 
-
+// return could be negative if oversold.
 function availableOpenhouseCountNoError($id) { // displays nothing if error
 	return availableOpenhouseCountErrorMinus($id, 0, "");
 }
-
-
 function availableOpenhouseCount($id) { // displays errors
 	return availableOpenhouseCountErrorMinus($id, 1, "");
 }
-
-// $confirmation - record to exclude from count
+// $confirmation - record to exclude from count // unused 
 function availableOpenhouseCountErrorMinus($id, $bError, $confirmation) {
 	// Check if registration is open for given event......
-	$query = "select (select max_guests from learntocurl_dates where ID = ".$id.") as MAX, (select sum(group_adults+group_juniors) from learntocurl where OPENHOUSE_ID = ".$id." and PAID_DOLLARS > 0 and CONFIRMATION != '".$confirmation."') as PLAYERS";
+	$availableSpace = 0;
+	$where_confirmation = "";
+	if (strlen ( $confirmation) > 0 ) 
+		$where_confirmation = "and CONFIRMATION != '".$confirmation."'";
+	
+	$query = "select (select coalesce(sum(group_adults+group_juniors),0) from learntocurl where OPENHOUSE_ID = ".$id." and PAID_DOLLARS > 0 ".$where_confirmation.") as REG, (select max_guests from learntocurl_dates where ID = ".$id.") as MAX ";
 	//echo "<div class='error'>" .$query. "</DIV>";
 	
 	$spaceavail = mysql_query($query);
-	if( !$spaceavail ) {
+	if( $spaceavail == FALSE) {
 		if($bError)
-			die("<div class='error'>Could not execute request for Open House availability: " . mysql_error(). "</div>");
+			die('<div class="error">Could not execute <span name="mysql_error" title="'. mysql_error().'">request for event availability(-)</span>. </div>');
 		else 
 			die();
+	} else {
+		$reg_players = mysql_result($spaceavail, 0, 0);
+		$max_guests = mysql_result($spaceavail, 0, 1);
+		$availableSpace = $max_guests - $reg_players;
 	}
-	$stringresult = mysql_result($spaceavail, 0, 0);
-	if( !$stringresult) {
-		if($bError)
-			die ("<div class='error'>Cannot retrieve Open House availability: ".mysql_error()."</div>");
-		else 
-			die();
-	}
-	$max_guests = $stringresult;
-	$reg_players  = mysql_result($spaceavail, 0, 1)?mysql_result($spaceavail, 0, 1):0;
-	
-	return $max_guests - $reg_players;
+	return $availableSpace;
 }
 
 
@@ -156,14 +151,14 @@ function attendedOpenhouseCountError($id, $bError) {
 	$attended = mysql_query($query);
 	if( !$attended ) {
 		if($bError)
-			die("<div class='error'>Could not execute request for Open House attended count: " . mysql_error(). "</div>");
+			die("<div class='error'>Could not execute request for event attended count: " . mysql_error(). "</div>");
 		else 
 			return -1;
 	}
 	$stringresult = mysql_result($attended, 0, 0);
 	if( !$stringresult) {
 		if($bError) {
-			// die ("<div class='error'>Cannot retrieve Open House attended count (null): ".mysql_error()."</div>");
+			// die ("<div class='error'>Cannot retrieve event attended count (null): ".mysql_error()."</div>");
 			echo "Null result returned";
 			return 0;
 		}

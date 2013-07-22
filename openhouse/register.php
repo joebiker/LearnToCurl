@@ -252,13 +252,13 @@ function payWithPayPal($confirmation_number, $openhousedate) {
 <input type=hidden name=custom value="<?php echo $_POST["groupname"]; ?>">
 <input type=hidden name=invoice value="<?php echo $confirmation_number; ?>">
 
-Payment Due: <span class='userinput'><?php echo "$". calculatePrice($_POST["adults"], $_POST["juniors"], 1) ?></span>
+Payment Due: <span class='userinput'><?php echo "$". calculatePrice($_POST["openhouseid"], $_POST["adults"], $_POST["juniors"], 1) ?></span>
 <br><input type="hidden" name="cmd" value="_xclick">
 <input type="hidden" name="business" value="<?php echo $PAYPAL_BUSINESS; ?>">
 <input type="hidden" name="lc" value="US">
 <input type="hidden" name="item_name" value="<?php echo $_POST["groupname"]; ?> - <?php echo $openhousedate; ?> (group of <?php echo $_POST["adults"] + $_POST["juniors"]; ?>) <?php echo $confirmation_number; ?>">
 <input type="hidden" name="button_subtype" value="services">
-<input type="hidden" name="amount" value="<?php echo calculatePrice($_POST["adults"], $_POST["juniors"], 0); ?>">
+<input type="hidden" name="amount" value="<?php echo calculatePrice($_POST["openhouseid"], $_POST["adults"], $_POST["juniors"], 0); ?>">
 <input type="hidden" name="currency_code" value="USD">
 <input type="hidden" name="shipping" value="1.00">
 <input type="hidden" name="bn" value="PP-BuyNowBF:btn_paynowCC_LG.gif:NonHosted">

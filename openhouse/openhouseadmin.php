@@ -1,11 +1,22 @@
 <HTML>
 <HEAD>
 <title>Admin Open House Report</title>
-	<link href="admin.css" rel="stylesheet" type="text/css" />
-	<script src="//ajax.googleapis.com/ajax/libs/mootools/1.4.5/mootools-yui-compressed.js"></script>
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
+	<link rel="stylesheet" media="all" type="text/css" href="admin.css" />
+	<link rel="stylesheet" media="all" type="text/css" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/mootools/1.4.5/mootools-yui-compressed.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="jquery-ui-timepicker-addon.js"></script>
+	<script type="text/javascript" src="jquery-ui-sliderAccess.js"></script>
 	<script type="text/javascript" language="Javascript">
+$(function() {
+	$('#newdate').datetimepicker({
+		showOtherMonths: true,
+		selectOtherMonths: true,
+		dateFormat: "yy-mm-dd"
+	});
+});
+
 function toggleCheck($conf, $field, $checkb, $msgspan) {
 	if($checkb.checked==true) {
 		$value = 'on';
@@ -297,8 +308,8 @@ echo "</div>";
 	<input type="hidden" name="id" value="">
 	<input type="hidden" name="type" value="newopenhouse">
 	<table cellpadding=0 cellspacing=0 border=0>
+	<TR><TD>Date / Time: </TD><TD><input type="text" name="newdate" id="newdate" size=40 maxlength=255></TD><TD> *(2008-08-31 14:00:00)</TD></TR>
 	<TR><TD>Display Name: </TD><TD><input type="text" name="newname" size=40 maxlength=255></TD><TD> To be displayed on Website - varchar(255) (updatable)</TD></TR>
-	<TR><TD>Date / Time: </TD><TD><input type="text" name="newdate" size=40 maxlength=255></TD><TD> *(2008-08-31 14:00:00)</TD></TR>
 	<TR><TD>Max Guests: </TD><TD><input type="text" name="newmax" size=10 maxlength=10></TD><TD>type int  (updatable)</TD></TR>
 	<TR><TD>Adult Price: </TD><TD>$<input type="text" name="newpriceadult" size=6 maxlength=10></TD><TD>*type int</TD></TR>
 	<TR><TD>Junior Price: </TD><TD>$<input type="text" name="newpricejunior" size=6 maxlength=10></TD><TD>*type int</TD></TR>
