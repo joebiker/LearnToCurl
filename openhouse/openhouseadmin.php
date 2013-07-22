@@ -3,6 +3,8 @@
 <title>Admin Open House Report</title>
 	<link href="admin.css" rel="stylesheet" type="text/css" />
 	<script src="//ajax.googleapis.com/ajax/libs/mootools/1.4.5/mootools-yui-compressed.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
 	<script type="text/javascript" language="Javascript">
 function toggleCheck($conf, $field, $checkb, $msgspan) {
 	if($checkb.checked==true) {
@@ -31,7 +33,7 @@ function toggleCheck($conf, $field, $checkb, $msgspan) {
 }
 
 
-function editOpenHouse($var0,$var1,$var2,$var3,$var4,$var5) {
+function editOpenHouse($var0,$var1,$var2,$var3,$var4,$var5,$var6,$var7,$var8) {
 	document.createopenhouse.type.value = "editopenhouse";
 	document.createopenhouse.id.value = $var0;
 	document.createopenhouse.newname.value = $var1;
@@ -39,6 +41,9 @@ function editOpenHouse($var0,$var1,$var2,$var3,$var4,$var5) {
 	document.createopenhouse.newmax.value = $var3;
 	document.createopenhouse.newcomments.value = $var4;
 	document.createopenhouse.newtype.value = $var5;
+	document.createopenhouse.newpriceadult.value = $var6;
+	document.createopenhouse.newpricejunior.value = $var7;
+	document.createopenhouse.newpricedisc.value = $var8;
 	document.createopenhouse.submitbutton.value = "Edit Open House Name/Max Guests";
 	
 	return;	
@@ -57,7 +62,7 @@ if( isset($_POST['type']) && (strlen($_POST['type']) > 4) ) {
 	$db_conn = connect_db($DB_SERVER, $DB_USER, $DB_PASS, $DB_NAME);	// from include
 
 	if( $_POST['type'] == "newopenhouse" ) {  // create new record
-		$result = mysql_query("insert into learntocurl_dates(event_date, event_name, max_guests, comments, event_type) values('".$_POST['newdate']."', '".$_POST['newname']."', ".$_POST['newmax'].", '".$_POST['newcomments']."', upper('".$_POST['newtype']."'))");
+		$result = mysql_query("insert into learntocurl_dates(event_date, event_name, max_guests, comments, event_type, price_adult, price_junior, price_disc) values('".$_POST['newdate']."', '".$_POST['newname']."', ".$_POST['newmax'].", '".$_POST['newcomments']."', upper('".$_POST['newtype']."'), '".$_POST['newpriceadult']."', '".$_POST['newpricejunior']."', '".$_POST['newpricedisc']."')");
 		if ($result) {
 			echo "<div class='success'>".$_POST['newdate']. " event created.</div>";
 		}
@@ -192,7 +197,7 @@ $db_conn = connect_db($DB_SERVER, $DB_USER, $DB_PASS, $DB_NAME);	// from include
 $result = false;
 // only display the selected open house
 if(isset($_GET['view']))
-$result = mysql_query("select EVENT_NAME, EVENT_DATE, MAX_GUESTS, ID, COMMENTS from learntocurl_dates where id = ".$_GET['view']." order by EVENT_DATE ASC", $db_conn);
+$result = mysql_query("select EVENT_NAME, EVENT_DATE, MAX_GUESTS, ID, COMMENTS, PRICE_ADULT, PRICE_JUNIOR, PRICE_DISC from learntocurl_dates where id = ".$_GET['view']." order by EVENT_DATE ASC", $db_conn);
 
 if($result && isset($_GET['view']) ) { //query was a success
 	//echo "statement hit";
@@ -271,12 +276,12 @@ echo "<div id='view_openhouse'>";
 echo "<table class='datatable' cellpadding=5>";
 echo "<TR><TH>&nbsp;<TH>Event Name<TH>Event Date<TH>Edit<TH>Available<TH>Attended<TH>Delete</TR>";
 
-$result = mysql_query("select EVENT_NAME, EVENT_DATE, MAX_GUESTS, ID, COMMENTS, EVENT_TYPE from learntocurl_dates where EVENT_DATE >= now() order by EVENT_DATE asc", $db_conn);
+$result = mysql_query("select EVENT_NAME, EVENT_DATE, MAX_GUESTS, ID, COMMENTS, EVENT_TYPE, PRICE_ADULT, PRICE_JUNIOR, PRICE_DISC from learntocurl_dates where EVENT_DATE >= now() order by EVENT_DATE asc", $db_conn);
 if($result) { //query was a success
 	include "openhouse_list.php";
 	echo "<tr bgcolor=white><td>-</TD><td>&nbsp;-&nbsp;</TD><td>-</TD><td>-</TD><td>-</TD><td>-</TD><td>-</TD></TR>";
 }
-$result = mysql_query("select EVENT_NAME, EVENT_DATE, MAX_GUESTS, ID, COMMENTS, EVENT_TYPE from learntocurl_dates where EVENT_DATE < now() order by EVENT_DATE desc limit 30", $db_conn);
+$result = mysql_query("select EVENT_NAME, EVENT_DATE, MAX_GUESTS, ID, COMMENTS, EVENT_TYPE, PRICE_ADULT, PRICE_JUNIOR, PRICE_DISC from learntocurl_dates where EVENT_DATE < now() order by EVENT_DATE desc limit 30", $db_conn);
 if($result) { //query was a success
 	include "openhouse_list.php";
 }
@@ -292,11 +297,14 @@ echo "</div>";
 	<input type="hidden" name="id" value="">
 	<input type="hidden" name="type" value="newopenhouse">
 	<table cellpadding=0 cellspacing=0 border=0>
-	<TR><TD>Display Name: <TD><input type="text" name="newname" size=40 maxlength=255><TD> To be displayed on Website - varchar(255) (updatable)</TR>
-	<TR><TD>Date / Time: <TD><input type="text" name="newdate" size=40 maxlength=255><TD> (2008-08-31 14:00:00)</TR>
-	<TR><TD>Max Guests: <TD><input type="text" name="newmax" size=10 maxlength=10><TD>type int  (updatable)</TR>
-	<TR><TD>Type: <TD><input type="text" name="newtype" size=10 maxlength=5><TD> L=Learn to Curl, P=Pickup game </TR>
-	<TR><TD>Comments: <TD><TEXTAREA name="newcomments" rows=6 cols=30></textarea><TD> (varchar(1000))  (updatable)</TR>
+	<TR><TD>Display Name: </TD><TD><input type="text" name="newname" size=40 maxlength=255></TD><TD> To be displayed on Website - varchar(255) (updatable)</TD></TR>
+	<TR><TD>Date / Time: </TD><TD><input type="text" name="newdate" size=40 maxlength=255></TD><TD> *(2008-08-31 14:00:00)</TD></TR>
+	<TR><TD>Max Guests: </TD><TD><input type="text" name="newmax" size=10 maxlength=10></TD><TD>type int  (updatable)</TD></TR>
+	<TR><TD>Adult Price: </TD><TD>$<input type="text" name="newpriceadult" size=6 maxlength=10></TD><TD>*type int</TD></TR>
+	<TR><TD>Junior Price: </TD><TD>$<input type="text" name="newpricejunior" size=6 maxlength=10></TD><TD>*type int</TD></TR>
+	<TR><TD>Group Disc: </TD><TD>$<input type="text" name="newpricedisc" size=6 maxlength=10></TD><TD>*type int (2 adults + 4 juniors max)</TD></TR>
+	<TR><TD>Type: </TD><TD><input type="text" name="newtype" size=10 maxlength=5></TD><TD> *L=Learn to Curl, P=Pickup game</TD></TR>
+	<TR><TD>Comments: </TD><TD><TEXTAREA name="newcomments" rows=6 cols=30></textarea></TD><TD> (varchar(1000))  (updatable)</TD></TR>
 	</table>
 	<input type="submit" name="submitbutton" value="Create Open House">
 	</form>
