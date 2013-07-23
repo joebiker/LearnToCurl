@@ -2,7 +2,8 @@
 
 $DEBUG            = 0;
 $ERROR_MSG        = "";
-$PP_FORM_POST     = ""; // sandbox
+$L2C_PASS         = "";
+$PP_FORM_POST     = "";
 $PAYPAL_BUSINESS  = "";
 $PAYPAL_USER      = "";
 $PAYPAL_PWD       = "";
@@ -97,7 +98,7 @@ function getAvailableOpenhouses_delay($hours) {
 
 function registeredOpenhouseCount($id) {
 	// Check if registration is open for given event......
-	$query = "select coalesce(sum(group_adults+group_juniors),0) as REG from learntocurl where OPENHOUSE_ID = ".$id." and PAID_DOLLARS > 0";
+	$query = "select coalesce(sum(group_adults+group_juniors),0) as REG from learntocurl where OPENHOUSE_ID = ".$id." and (PAID_DOLLARS > 0 or PAID_TYPE = 'free')";
 	
 	$spaceavail = mysql_query($query);
 	if( $spaceavail==FALSE ) {
@@ -125,7 +126,7 @@ function availableOpenhouseCountErrorMinus($id, $bError, $confirmation) {
 	if (strlen ( $confirmation) > 0 ) 
 		$where_confirmation = "and CONFIRMATION != '".$confirmation."'";
 	
-	$query = "select (select coalesce(sum(group_adults+group_juniors),0) from learntocurl where OPENHOUSE_ID = ".$id." and PAID_DOLLARS > 0 ".$where_confirmation.") as REG, (select max_guests from learntocurl_dates where ID = ".$id.") as MAX ";
+	$query = "select (select coalesce(sum(group_adults+group_juniors),0) from learntocurl where OPENHOUSE_ID = ".$id." and (PAID_DOLLARS > 0 or PAID_TYPE = 'free') ".$where_confirmation.") as REG, (select max_guests from learntocurl_dates where ID = ".$id.") as MAX ";
 	//echo "<div class='error'>" .$query. "</DIV>";
 	
 	$spaceavail = mysql_query($query);
@@ -145,7 +146,7 @@ function availableOpenhouseCountErrorMinus($id, $bError, $confirmation) {
 
 function attendedOpenhouseCountError($id, $bError) {
 	// Check if registration is open for given event......
-	$query = "select sum(group_adults+group_juniors) from learntocurl where OPENHOUSE_ID = ".$id." and PAID_DOLLARS > 0 and ATTENDED = 1";
+	$query = "select sum(group_adults+group_juniors) from learntocurl where OPENHOUSE_ID = ".$id." and (PAID_DOLLARS > 0 or PAID_TYPE = 'free') and ATTENDED = 1";
 	//echo "<div class='error'>" .$query. "</DIV>";
 	
 	$attended = mysql_query($query);
@@ -200,5 +201,52 @@ function setFlag($confirmation, $field, $value) {
 		return "<div class='error'>Error</div>";
 }
 
+
+class Auth
+{
+	// property declaration
+	public $var = "a default value";
+	public $db_auth;
+	public $current_user;
+	
+    function __construct() {
+		$this->var = "In BaseClass constructor\n";
+	}
+	
+	public function start() {
+		if ( isset($_POST['pwd']) ) {
+			// set session variable
+			$_SESSION['pwd'] = $_POST['pwd'];
+		}
+		if ( !isset($_SESSION['pwd']) ) {
+			// Show password prompt
+			showLogin();
+		}
+	}
+	
+	public function getAdmin() {
+		global $L2C_PASS;
+		// use session variables
+		if( isset($_SESSION['pwd']) == true )  {
+			if( strcmp($_SESSION['pwd'], $L2C_PASS)==0 ) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		} 
+		else
+		{	// don't allow access
+			return false;
+		}
+	}
+	
+	public function showLogin() {
+		echo "<HTML><form method='post'>\n";
+		echo "<input type='password' name='pwd' size='12'>\n";
+		echo "<input type='submit'></form>\n</HTML>";
+	}
+
+}
 
 ?>

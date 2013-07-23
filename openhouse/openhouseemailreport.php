@@ -1,8 +1,25 @@
+<?php
+
+session_name('Private');
+session_start();
+
+include '../common.php';
+include "../database.php";
+
+// AUTH //
+	$a = new Auth();
+	$a->start();
+	if (! $a->getAdmin()) {
+		$a->showLogin();
+		exit();
+	}
+//////////
+
+?>
 <HTML>
 <HEAD>
-<title>Admin Report</title>
+<title>Learn to Curl - Admin Report - Email</title>
 <link href="admin.css" rel="stylesheet" type="text/css" />
-<title>Learn to Curl Email Report</title>
 </HEAD>
 <BODY>
 
@@ -18,12 +35,11 @@
 </div>
 
 
-<h1>Email Report</h1>
+<h1>Learn to Curl - Email Report</h1>
 <form method='post' name='category'>
 <input type="hidden" name="search" value="%">
 <?php
-	include '../common.php';
-	include '../database.php';		
+
 	$db_conn = connect_db($DB_SERVER, $DB_USER, $DB_PASS, $DB_NAME);	// from include
 
 	$modify_event_id = isset($_REQUEST['openhouseid'])?trim($_REQUEST['openhouseid']):"";

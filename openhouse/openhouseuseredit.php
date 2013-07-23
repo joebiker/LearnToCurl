@@ -1,10 +1,30 @@
+<?php
+
+session_name('Private');
+session_start();
+
+include '../common.php';
+include "../database.php";
+
+// AUTH //
+	$a = new Auth();
+	$a->start();
+	if (! $a->getAdmin()) {
+		$a->showLogin();
+		exit();
+	}
+//////////
+
+?>
 <HTML>
 <HEAD>
-	<title>Admin Learn to Curl Report</title>
+	<title>Learn to Curl Administration - Confirmation</title>
+	<link href="../learntocurl.css" rel="stylesheet" type="text/css" />
 	<link href="admin.css" rel="stylesheet" type="text/css" />
 </HEAD>
 <body>
 
+<h1>Learn to Curl - Confirmation</h1>
 <?php
 
 $callingpage = 'openhouseview.php';
@@ -14,19 +34,21 @@ if( isset($_REQUEST['callingpage']))
 $openhouseid = -1;
 if( isset($_REQUEST['openhouseid'])) 
 	$openhouseid = $_REQUEST['openhouseid']; 
+?>
 
+
+<div id="logo" style="position:absolute; left: 10; top: 2px; color: green; ">
+	<a href="<?php echo $callingpage.'?view='.$openhouseid; ?>"><< Back</a> 
+</div>
+
+
+<?php	
 // based completely on CONF number. Consider using OpenhouseID and CONF Number jvp-June-2013	
 if( isset($_GET['conf']) && strlen($_GET['conf']) < 10) {
 	$conf = $_GET['conf'];
 	
-	echo "<h1>Edit Registration</h1>";
-	
-	include '../common.php';
-	include '../database.php';
 	$db_conn = connect_db($DB_SERVER, $DB_USER, $DB_PASS, $DB_NAME);	// from include
-
 	$resultdata = mysql_query("select group_name, group_adults, group_juniors, email, paid_dollars, paid_type, confirmation, attended, waiver, id, user_refer, reg_refer, learn_refer from learntocurl, learntocurl_dates where id = openhouse_id AND confirmation='$conf' order by EVENT_DATE ASC, group_name", $db_conn);
-
 	if($resultdata) { //query was a success
 
 		while ($rowdata = mysql_fetch_array($resultdata, MYSQL_BOTH)) {
@@ -53,6 +75,7 @@ if( isset($_GET['conf']) && strlen($_GET['conf']) < 10) {
 			        ."<option value='cash'";  if($rowdata[5]=="cash")  echo "selected"; echo ">Cash</option>"
 			        ."<option value='check' "; if($rowdata[5]=="check")  echo "selected"; echo ">Check</option>"
 			        ."<option value='paypal' "; if($rowdata[5]=="paypal") echo "selected"; echo ">PayPal</option>"
+			        ."<option value='free' "; if($rowdata[5]=="free") echo "selected"; echo ">Free</option>"
 			        ."</select></td>";
 			    echo '<td align=center><input type="checkbox" name="attended" '; if(strcmp($rowdata[7],"1")==0) echo ' checked="yes" '; echo '>';
 			    echo '<td align=center><input type="checkbox" name="waiver"   '; if(strcmp($rowdata[8],"1")==0) echo ' checked="yes" '; echo '></tr>';
@@ -94,7 +117,7 @@ if( isset($_GET['conf']) && strlen($_GET['conf']) < 10) {
 		    </form>
 		    <?php } ?>
 		     
-		    <a href="<?php echo $callingpage.'?view='.$rowdata[9]; ?>">< go back</a> 
+		    <a href="<?php echo $callingpage.'?view='.$openhouseid; ?>"><< Back</a> 
 		    
 		    
 		    <?php

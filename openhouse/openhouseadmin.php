@@ -1,6 +1,24 @@
+<?php
+
+session_name('Private');
+session_start();
+
+include '../common.php';
+include "../database.php";
+
+// AUTH //
+	$a = new Auth();
+	$a->start();
+	if (! $a->getAdmin()) {
+		$a->showLogin();
+		exit();
+	}
+//////////
+
+?>
 <HTML>
 <HEAD>
-<title>Admin Open House Report</title>
+<title>Learn to Curl Administration</title>
 	<link rel="stylesheet" media="all" type="text/css" href="admin.css" />
 	<link rel="stylesheet" media="all" type="text/css" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/mootools/1.4.5/mootools-yui-compressed.js"></script>
@@ -66,8 +84,6 @@ function editOpenHouse($var0,$var1,$var2,$var3,$var4,$var5,$var6,$var7,$var8) {
 <h1>Learn to Curl Administration</h1>
 
 <?php
-include '../common.php';
-include "../database.php";
 
 if( isset($_POST['type']) && (strlen($_POST['type']) > 4) ) {
 	$db_conn = connect_db($DB_SERVER, $DB_USER, $DB_PASS, $DB_NAME);	// from include

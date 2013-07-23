@@ -1,6 +1,24 @@
+<?php
+
+session_name('Private');
+session_start();
+
+include '../common.php';
+include "../database.php";
+
+// AUTH //
+	$a = new Auth();
+	$a->start();
+	if (! $a->getAdmin()) {
+		$a->showLogin();
+		exit();
+	}
+//////////
+
+?>
 <HTML>
 <HEAD>
-<title>Learn to Curl Admin</title>
+<title>Learn to Curl Administration - Event</title>
 	<link href="../learntocurl.css" rel="stylesheet" type="text/css" />
 	<link href="admin.css" rel="stylesheet" type="text/css" />
 	<script src="//ajax.googleapis.com/ajax/libs/mootools/1.4.5/mootools-yui-compressed.js"></script>
@@ -50,12 +68,9 @@ function editOpenHouse($var0,$var1,$var2,$var3,$var4,$var5) {
 </head>
 <body>
 
-<h1>Learn to Curl Administration</h1>
+<h1>Learn to Curl - Event</h1>
 
 <?php
-
-include '../common.php';
-include '../database.php';
 
 if( isset($_POST['type']) && (strlen($_POST['type']) > 4) ) {
 	$db_conn = connect_db($DB_SERVER, $DB_USER, $DB_PASS, $DB_NAME);	// from include
@@ -267,7 +282,7 @@ if($result && isset($_REQUEST['view']) ) { //query was a success
 		echo '<input type="hidden" name="type" value="newguest">';
 		echo '<input type="hidden" name="openhouseid" value="'.$row[3].'">';
 		
-		echo '<TABLE><TR><TD valign=top>'; // Add Attendee
+		echo '<TABLE width="100%" border=0><TR><TD valign=top>'; // Add Attendee
 		echo '<table>';
 		echo '<tr><th>Add</th><th>Attendee</th></tr>';
 	    echo '<tr><td>Group Name: <td><input type=text name="groupname" id="groupname">';
@@ -277,6 +292,7 @@ if($result && isset($_REQUEST['view']) ) { //query was a success
 	    echo '<select name="paid_type"><option value="">Not Paid</option>';
 	    echo '<option value="cash">Cash</option>';
 	    echo '<option value="check">Check</option>';
+	    echo '<option value="free">Free</option>';
 	    echo '</select>';
 	    echo '<tr><td>Attended: <td><input type="checkbox" name="attended" id="attended">';
 	    echo '<tr><td>Waiver: <td><input type="checkbox" name="waiver" id="waiver">';
@@ -291,7 +307,7 @@ if($result && isset($_REQUEST['view']) ) { //query was a success
 	    echo '<tr><td>Adult:&nbsp;&nbsp;</td><td>$'.$price_adult.'</td></tr>';
 	    echo '<tr><td>Junior:&nbsp;&nbsp;</td><td>$'.$price_junior.'</td></tr>';
 	    echo '<tr><td>Discount:&nbsp;&nbsp;</td><td>$'.$price_disc.'</td></tr>';
-	    echo '<tr><td colspan=2 class="info">*Discount for family of up to<BR> 2 adults and 4 children</td></tr>';
+	    echo '<tr><td colspan=2 class="info">Discount price for up to 2 adults <BR>and 4 children, calculated at checkout.</td></tr>';
 	    echo '</table>';
 	    
 	    
