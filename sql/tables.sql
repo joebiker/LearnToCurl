@@ -35,6 +35,8 @@ CREATE TABLE `learntocurl` (
   `WAIVER` int(2) default NULL,
   `PAID_DOLLARS` float default '0',
   `PAID_TYPE` varchar(100) default NULL,
+  `PAID_DATE` timestamp NULL default NULL,
+  `PAYPAL_TX_ID` varchar(100) default NULL,
   `LEARN_REFER` varchar(255) default NULL COMMENT 'refer from /learn/ page hit',
   `REG_REFER` varchar(255) default NULL COMMENT 'Refer from /learn/openhouse/',
   `USER_REFER` varchar(255) default NULL COMMENT 'user input how they learned about ECC',

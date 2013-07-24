@@ -1,10 +1,8 @@
 <?php
 
 function recordPayment() {
+	global $EMAIL_FROM_ADMIN, $EMAIL_ERRORS_TO;
 	$filename = 'ipn_log.txt';
-	$email_from_admin = "joe@abc.com";  // Email is sent from this persom -- treasurer or l2c admin
-	// This is where errors are sent
-	$toAdmin = "joe@abc.com"; // seperate by commas if you want multiple emails
 	$handle = fopen($filename, 'a');
 	
 			// Check the payment_status is Completed
@@ -52,8 +50,8 @@ function recordPayment() {
 				
 				// ------------------ Send Email  -------------------- //
 				$subject = 'Learn to Curl Registration FAILED';
-				$headers = 'From: $email_from_admin' . "\r\n" .
-				    'Reply-To: $email_from_admin' . "\r\n" . // If you want different address
+				$headers = 'From: $EMAIL_FROM_ADMIN' . "\r\n" .
+				    'Reply-To: $EMAIL_FROM_ADMIN' . "\r\n" . // If you want different address
 				    'X-Mailer: PHP/' . phpversion();
 				
 				// The message
@@ -66,7 +64,8 @@ function recordPayment() {
 				fwrite($handle, "\nSubject: ". $subject ."\n".$message);
 
 				// Send
-				mail($toAdmin, $subject, $message, $headers);
+				if( strlen($EMAIL_ERRORS_TO) > 0)
+					mail($EMAIL_ERRORS_TO, $subject, $message, $headers);
 
 				return "error";	
 			}
@@ -75,7 +74,7 @@ function recordPayment() {
 			include '../database.php';
 			
 			$db_conn = connect_db($DB_SERVER, $DB_USER, $DB_PASS, $DB_NAME);	// from include
-			$query = "update learntocurl set paid_type='paypal', paid_dollars=".$payment." where confirmation='".$lookup."' LIMIT 1";
+			$query = "update learntocurl set paid_type='paypal', paid_dollars=".$payment.", paid_date=now() where confirmation='".$lookup."' LIMIT 1";
 			
 			$update = mysql_query($query, $db_conn);
 			if( $update ) {
@@ -93,8 +92,8 @@ function recordPayment() {
 				// ------------------ Send Email  -------------------- //
 				$to      = mysql_result($result, 0, 1);
 				$subject = 'Learn to Curl confirmation number';
-				$headers = 'From: $email_from_admin' . "\r\n" .
-				    'Reply-To: $email_from_admin' . "\r\n" . // If you want different address
+				$headers = 'From: $EMAIL_FROM_ADMIN' . "\r\n" .
+				    'Reply-To: $EMAIL_FROM_ADMIN' . "\r\n" . // If you want different address
 				    'X-Mailer: PHP/' . phpversion();
 				
 				$webconfirm = ""; // URL
@@ -115,8 +114,8 @@ function recordPayment() {
 				
 				// ------------------ Send Email  -------------------- //
 				$subject = 'Learn to Curl Registration FAILED';
-				$headers = 'From: $email_from_admin' . "\r\n" .
-				    'Reply-To: $email_from_admin' . "\r\n" . // If you want different address
+				$headers = 'From: $EMAIL_FROM_ADMIN' . "\r\n" .
+				    'Reply-To: $EMAIL_FROM_ADMIN' . "\r\n" . // If you want different address
 				    'X-Mailer: PHP/' . phpversion();
 				
 				// The message
@@ -129,7 +128,8 @@ function recordPayment() {
 				fwrite($handle, "\nSubject: ". $subject ."\n".$message);
 
 				// Send
-				mail($toAdmin, $subject, $message, $headers);
+				if( strlen($EMAIL_ERRORS_TO) > 0)
+					mail($EMAIL_ERRORS_TO, $subject, $message, $headers);
 
 			}
 			

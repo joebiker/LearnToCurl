@@ -10,7 +10,6 @@ include "../database.php";
 	$a = new Auth();
 	$a->start();
 	if (! $a->getAdmin()) {
-		$a->showLogin();
 		exit();
 	}
 //////////

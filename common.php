@@ -3,6 +3,8 @@
 $DEBUG            = 0;
 $ERROR_MSG        = "";
 $L2C_PASS         = "";
+$EMAIL_FROM_ADMIN = ""; // System sends email from this address
+$EMAIL_ERRORS_TO  = ""; // If error occurs send email here. Seperate by commas if you want multiple
 $PP_FORM_POST     = "";
 $PAYPAL_BUSINESS  = "";
 $PAYPAL_USER      = "";
@@ -220,7 +222,7 @@ class Auth
 		}
 		if ( !isset($_SESSION['pwd']) ) {
 			// Show password prompt
-			showLogin();
+			$this->showLogin();
 		}
 	}
 	
@@ -231,7 +233,8 @@ class Auth
 			if( strcmp($_SESSION['pwd'], $L2C_PASS)==0 ) {
 				return true;
 			}
-			else {
+			else {	// Incorrect password
+				$this->showLogin();
 				return false;
 			}
 		} 
