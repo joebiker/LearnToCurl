@@ -1,10 +1,33 @@
 <?php
 
-session_name('Private');
-session_start();
-
 include '../common.php';
 include "../database.php";
+
+// process download file first
+if(isset($_REQUEST['openhouseid']) && isset($_REQUEST['type']) ) {
+	$id = trim($_REQUEST['openhouseid']);
+	
+	include "cEvent.php";
+	$e = new Event($_REQUEST['openhouseid']);
+	$arr = $e->getEmails();
+	$nicedate = $e->getNiceDate();
+	
+	header("Content-type: text/csv");
+	header("Content-Disposition: attachment; filename=$nicedate.csv");
+	header("Pragma: no-cache");
+	header("Expires: 0");
+
+	echo 'Email Address,First Name,Last Name'."\r\n";
+	foreach ( $arr as $guest ) {
+		if(strlen($guest["email"]) > 0)
+			echo $guest['email'].",".$guest['first'].",".$guest['last']."\r\n";
+	}
+	exit();
+}
+
+
+session_name('Private');
+session_start();
 
 // AUTH //
 	$a = new Auth();
@@ -66,31 +89,23 @@ echo '</select>';
 <?php
 
 if(isset($_REQUEST['openhouseid'])) {
-	//$s = trim($_REQUEST['search']);
 	$id = trim($_REQUEST['openhouseid']);
-		
-	// Basic Search Query
-	$query = "select group_name, email from learntocurl where openhouse_id = $id ";
-	$result = mysql_query($query, $db_conn);
-	// echo $query; // DEBUG
-	if($result) {
-		//echo "<BR>Row count: ".mysql_num_rows($result) ."<BR>";
-		echo "<table class='datatable'>";
+	echo "<a href='".$_SERVER['PHP_SELF']."?openhouseid=".$id."&type=csv'>download";
+	echo "<img valign='middle' width=60 src='http://openclipart.org/image/80px/svg_to_png/169752/file-icon-csv.png'></a>";
+	include "cEvent.php";
+	$e = new Event($_REQUEST['openhouseid']);
+	$arr = $e->getEmails();
 
-		if ( mysql_affected_rows() == 0 )
-			echo "<TD>No results found</TD>"; 
-		while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
-			$t_jscript = "";
-			$html = "";
-			if(strlen($row[1])>0)
-				echo "<TR><TD>$row[1]</TD></TR>\n";
-		}
-	    echo "</table>";
+	echo "<table class='datatable'>";
+	foreach ( $arr as $guest ) {
+		if(strlen($guest["email"]) > 0)
+			echo "<TR><TD>".$guest["email"]."</TD></TR>\n";
 	}
-	else {
-		echo "SQL Failed: ". mysql_error();
-	}
-	mysql_free_result($result);
+	echo "</table>";
+	
+//	echo "<PRE>";
+//	print_r($e->getNiceDate());
+//	echo "</PRE>";
 } // end isset
 
 ?>
