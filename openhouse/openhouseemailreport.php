@@ -74,7 +74,7 @@ session_start();
 			if( $modify_event_id == $row[0] ) $selected = "selected"; else $selected = "";
 			$stamp = strtotime($row[1]);
 			$nicedate = date('D jS \of F Y h:i:s A', $stamp);
-		    printf ("<option value='$row[0]' $selected>$nicedate - $row[2]</option>\n");  // $row[1] - $row[2]
+		    printf ("<option value='$row[0]' $selected>$nicedate - $row[2]</option>\n");
 
 		}
 	}else echo mysql_error();
@@ -91,7 +91,7 @@ echo '</select>';
 if(isset($_REQUEST['openhouseid'])) {
 	$id = trim($_REQUEST['openhouseid']);
 	echo "<a href='".$_SERVER['PHP_SELF']."?openhouseid=".$id."&type=csv'>download";
-	echo "<img valign='middle' width=60 src='http://openclipart.org/image/80px/svg_to_png/169752/file-icon-csv.png'></a>";
+	echo "<img style='vertical-align:middle;border-width:0;' width=60 src='http://openclipart.org/image/80px/svg_to_png/169752/file-icon-csv.png'></a>";
 	include "cEvent.php";
 	$e = new Event($_REQUEST['openhouseid']);
 	$arr = $e->getEmails();
@@ -102,12 +102,6 @@ if(isset($_REQUEST['openhouseid'])) {
 			echo "<TR><TD>".$guest["email"]."</TD></TR>\n";
 	}
 	echo "</table>";
-	
-//	echo "<PRE>";
-//	print_r($e->getNiceDate());
-//	echo "</PRE>";
-} // end isset
-
 ?>
 
 </body>
