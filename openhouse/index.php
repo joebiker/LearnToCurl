@@ -2,6 +2,8 @@
 <html>
 <head>
 	<meta charset="utf-8">
+	<meta name="author" content="Joe Petsche" />
+	<meta name="DC.creator" content="Joe Petsche" />
 	<title>Learn to Curl Registration</title>
 	<link href="../learntocurl.css" rel="stylesheet" type="text/css" />
 
