@@ -1,22 +1,32 @@
 <?php
 include '../common.php';
 include '../database.php';
-		
+include 'cEvent.php';
+
 if( isset($_GET['id']) && (strlen($_GET['id']) < 10) ) { // no sql injection please
 // Display a text message about the registration for the given ID
 	$db_conn = connect_db($DB_SERVER, $DB_USER, $DB_PASS, $DB_NAME);	// from include
-	$openspace = availableOpenhouseCountNoError($_GET['id']);
-
-	if ($openspace == 1 ) {
-		echo "Only one space is open";
-	}
-	else if ($openspace <= 0 ) {
-		echo "Selected Open House is currently full.";
+	
+	if( isset($_GET['name']) ) { 
+		// get the name of the event
+		$myEvent = new Event($_GET['id']);
+		echo $myEvent->getName();
 	}
 	else {
-		echo "There are ";
-		echo $openspace;
-		echo " spots remaining.";
+		// get the number of spaces that remain
+		$openspace = availableOpenhouseCountNoError($_GET['id']);
+	
+		if ($openspace == 1 ) {
+			echo "Only one space is open";
+		}
+		else if ($openspace <= 0 ) {
+			echo "Selected Open House is currently full.";
+		}
+		else {
+			echo "There are ";
+			echo $openspace;
+			echo " spots remaining.";
+		}
 	}
 
 } else if (isset($_GET['confirmation_number']) && (strlen($_GET['confirmation_number']) == 5) ) { // no sql injection please

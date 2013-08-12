@@ -6,34 +6,11 @@
 	<meta name="DC.creator" content="Joe Petsche" />
 	<title>Learn to Curl Registration</title>
 	<link href="../learntocurl.css" rel="stylesheet" type="text/css" />
-
-	<script src="//ajax.googleapis.com/ajax/libs/mootools/1.4.5/mootools-yui-compressed.js"></script>
-	<script language="Javascript" type="text/javascript">
-
-function checkReg($id) {
-	//make the ajax call, replace text
-	var req = new Request.HTML({
-		method: 'get',
-		url: 'openhousecheck.php',
-		data: { 'id' : $id },
-		onRequest: function() { /* alert('Request made. Please wait...'); */ },
-		update: $('openspace'),
-		onComplete: function(response) { /* alert('Request completed successfully.'); $('openspace').setStyle('background','#fffea1'); */
-		}
-	}).send();
-	
-	/* setTimeout('$(\'openspace\').setStyle(\'background\',\'#fffea1\')', 500);
-	$('openspace').setStyle('background','#fffec1');
-	$('openspace').setStyle('background','#fffed1');
-	$('openspace').setStyle('background','#fffef1');
-	$('openspace').setStyle('background','#ffffff'); */
-	return;
-}
-
-	</script>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
 </head>
 
-<body onload="checkReg(document.getElementById('openhouseid').value);">
+<body>
 <div id="wrapper">
 <div id="content">
 
@@ -123,7 +100,7 @@ if( isset($_REQUEST['type']) && "editopenhouse" == $_REQUEST['type'] ) {  // edi
 	
 ?>
 </select>
-<TD><span id="openspace"></span></TR>
+<TD><span id="eventname"></span></TR>
 
 <TR>
 <TD>Adult Leader 
@@ -139,7 +116,7 @@ if( isset($_REQUEST['type']) && "editopenhouse" == $_REQUEST['type'] ) {  // edi
 <option <?php if($modify_adults == 4) echo "selected"; ?>>4</option>
 <option <?php if($modify_adults == 5) echo "selected"; ?>>5</option>
 <option <?php if($modify_adults == 6) echo "selected"; ?>>6</option>
-</select> <TD></TR>
+</select> <TD><span id="openspace"></span></TR>
 <TR>
 <TD>21 yrs old or younger 
 <td><select name="juniors" id="juniors">
@@ -188,6 +165,30 @@ How did you hear about our Learn to Curl Event? <input type=text name="user_refe
 </TABLE>
 </fieldset>
 <P>Note: "You are guaranteed your spot only after submitting payment"</P>
+<script>
+$("#openhouseid").change(function() {
+	var data = $(this).val();
+	//alert (data);
+	var requestname = $.ajax({  
+		type: "GET",  
+		url: "openhousecheck.php", 
+		data: { id: data, name: 1 }
+	});
+	requestname.done(function(msg) {  
+		//alert (msg);
+		$("#eventname").html( msg );});
+
+	var requestspace = $.ajax({  
+		type: "GET",  
+		url: "openhousecheck.php", 
+		data: { id: data }
+	});
+	requestspace.done(function(msg) {  
+		//alert (msg);
+		$("#openspace").html( msg );});
+	
+}).trigger('change');
+</script>
 </form>
 
 </div>
