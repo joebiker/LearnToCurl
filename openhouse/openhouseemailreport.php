@@ -90,7 +90,7 @@ echo '</select>';
 
 if(isset($_REQUEST['openhouseid'])) {
 	$id = trim($_REQUEST['openhouseid']);
-	echo "<a href='".$_SERVER['PHP_SELF']."?openhouseid=".$id."&type=csv'>download";
+	echo "<a href='".$_SERVER['PHP_SELF']."?openhouseid=".$id."&type=csv'>download with names";
 	echo "<img style='vertical-align:middle;border-width:0;' width=60 src='http://openclipart.org/image/80px/svg_to_png/169752/file-icon-csv.png'></a>";
 	include "cEvent.php";
 	$e = new Event($_REQUEST['openhouseid']);
@@ -102,6 +102,7 @@ if(isset($_REQUEST['openhouseid'])) {
 			echo "<TR><TD>".$guest["email"]."</TD></TR>\n";
 	}
 	echo "</table>";
+}
 ?>
 
 </body>

@@ -64,7 +64,7 @@ if( isset($_POST['type']) && "newopenhouse" == $_POST['type'] ) { // continue wi
 	
 	$i = 0;
 	$dbConfirm = $confirmation_number;
-	while( ($dbConfirm == $confirmation_number) && ($i < 3) ) {
+	while( ($dbConfirm == $confirmation_number) && ($i < 11) ) {
 		/// check if random confirmation code exists in database
 		$isConfirmation = mysql_query("select group_name from learntocurl where CONFIRMATION = '".$confirmation_number."'", $db_conn);
 		if($isConfirmation) { //query was a success

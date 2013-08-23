@@ -86,7 +86,7 @@ if( isset($_REQUEST['type']) && "editopenhouse" == $_REQUEST['type'] ) {  // edi
 <TD>Requested Event 
 <TD><select name="openhouseid" id="openhouseid" onchange="checkReg(this.value);">
 <?php
-
+	// TODO: Create built in function to print <select> and eliminate open houses that are currently full.
 	$events_result = mysql_query("select ID, EVENT_DATE, EVENT_NAME from learntocurl_dates where EVENT_DATE >= current_date() and EVENT_TYPE='L' order by EVENT_DATE ASC", $db_conn);
 	if($events_result) { //query was a success
 		while ($row = mysql_fetch_array($events_result, MYSQL_BOTH)) {
@@ -165,6 +165,18 @@ How did you hear about our Learn to Curl Event? <input type=text name="user_refe
 </TABLE>
 </fieldset>
 <P>Note: "You are guaranteed your spot only after submitting payment"</P>
+<?php
+
+$cookie_type = "openh_refer";
+$cookie_data = $_COOKIE[$cookie_type];
+$reg_refer   = getenv("HTTP_REFERER");
+
+//send along with registration
+echo '<input type=hidden name="learn_refer" value="'.$cookie_data.'">';
+echo '<input type=hidden name="reg_refer" value="'.$reg_refer.'">';
+
+
+?>
 <script>
 $("#openhouseid").change(function() {
 	var data = $(this).val();
