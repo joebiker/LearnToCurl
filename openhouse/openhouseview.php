@@ -319,7 +319,7 @@ if($result && isset($_REQUEST['view']) ) { //query was a success
 } // if
 
 ?>
-
+</tr></table>
 <div id=search>
 Search by <b>confirmation number</b> or <b>group name</b>. <i>NOTE: The first occurrence will be returned if multiple exist.</I>
 <form method="post" action="openhousesearch.php" name="search">

@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+<?php setcookie("event_referral", getenv("HTTP_REFERER"));
+?><!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
@@ -60,7 +61,12 @@ if( count($myarray) >0 ) {
 </div> <!-- main -->
 
 <br clear="all" />
+<?php
 
+$event_referral = getenv("HTTP_REFERER");
+if($DEBUG) echo $event_referral;
+
+?>
 </div> <!-- wrapper -->
 </body>
 </html>

@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+<?php setcookie("reg_referral", getenv("HTTP_REFERER")); 
+?><!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
@@ -167,14 +168,18 @@ How did you hear about our Learn to Curl Event? <input type=text name="user_refe
 <P>Note: "You are guaranteed your spot only after submitting payment"</P>
 <?php
 
-$cookie_type = "openh_refer";
-$cookie_data = $_COOKIE[$cookie_type];
-$reg_refer   = getenv("HTTP_REFERER");
+$event_referral = "";
+if( isset($_COOKIE["event_referral"]))
+	$event_referral = $_COOKIE["event_referral"];
+$reg_referral = getenv("HTTP_REFERER");
+if($DEBUG) {
+	echo "<BR>event: ".$event_referral;
+	echo "<BR>reg: ".$reg_referral;
+}
 
 //send along with registration
-echo '<input type=hidden name="learn_refer" value="'.$cookie_data.'">';
-echo '<input type=hidden name="reg_refer" value="'.$reg_refer.'">';
-
+echo '<input type=hidden name="learn_refer" value="'.$event_referral.'">';
+echo '<input type=hidden name="reg_refer" value="'.$reg_referral.'">';
 
 ?>
 <script>
