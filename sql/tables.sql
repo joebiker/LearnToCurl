@@ -7,7 +7,7 @@ CREATE TABLE `learntocurl_dates` (
   `MAX_GUESTS` int(11) NOT NULL default 8,
   `PRICE_ADULT` float NOT NULL default '20',
   `PRICE_JUNIOR` float NOT NULL default '10',
-  `PRICE_DISC` float default '40',
+  `PRICE_DISC` float NOT NULL default '40',
   `COMMENTS` varchar(1000) default NULL,
   PRIMARY KEY  (`ID`),
   KEY `EVENT_DATE` (`EVENT_DATE`)
@@ -35,6 +35,8 @@ CREATE TABLE `learntocurl` (
   `WAIVER` int(2) default NULL,
   `PAID_DOLLARS` float default '0',
   `PAID_TYPE` varchar(100) default NULL,
+  `PAID_DATE` timestamp NULL default NULL,
+  `PAYPAL_TX_ID` varchar(100) default NULL,
   `LEARN_REFER` varchar(255) default NULL COMMENT 'refer from /learn/ page hit',
   `REG_REFER` varchar(255) default NULL COMMENT 'Refer from /learn/openhouse/',
   `USER_REFER` varchar(255) default NULL COMMENT 'user input how they learned about ECC',

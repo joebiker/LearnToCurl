@@ -2,6 +2,8 @@
 <html>
 <head>
 	<meta charset="utf-8">
+	<meta name="author" content="Joe Petsche" />
+	<meta name="DC.creator" content="Joe Petsche" />
 	<title>Pending Registration</title>
 	<link href="../learntocurl.css" rel="stylesheet" type="text/css" />
 </head>
@@ -112,7 +114,7 @@ if( isset($_POST['type']) && "newopenhouse" == $_POST['type'] ) { // continue wi
 ?>
 Event: <span class='userinput'><?php 
 			$stamp = strtotime($openhouse[0]);
-			$nicedate = date('D jS \of F Y h:i:s A', $stamp);
+			$nicedate = date('D jS \of F Y g:i A', $stamp);
 echo $nicedate ." - ". $openhouse[1]; ?> </span><BR>
 Leader: <span class='userinput'><?php echo $_POST["groupname"][0]; ?> </span><BR>
 Email: <span class='userinput'><?php echo htmlspecialchars($_POST["email"][0]); ?> </span><BR>
@@ -137,7 +139,7 @@ for ( $i=0; $i < count($_POST['groupname']); $i++) {
 			$modified_name = $_POST['groupname'][$i];
 		}
 		echo "<BR>$i ) $modified_name.  Email: ".$_POST['email'][$i];
-	$insert = mysql_query("insert into openhouse(group_name, email, group_adults, group_juniors, confirmation, openhouse_id, learn_refer, reg_refer, user_refer, create_browser, create_ip) ".
+	$insert = mysql_query("insert into learntocurl(group_name, email, group_adults, group_juniors, confirmation, openhouse_id, learn_refer, reg_refer, user_refer, create_browser, create_ip) ".
 	"values('".htmlspecialchars($modified_name)."', '".htmlspecialchars($_POST['email'][$i])."', 1, 0, '".$confirmation_number."', '".$_POST['openhouseid']."', '".$learn_refer."', '".$reg_refer."', '".$user_refer."', '".$_SERVER['HTTP_USER_AGENT']."', '".$_SERVER['REMOTE_ADDR']."' ) ", $db_conn);
 	if( $insert ) { /* echo "<div class='success'>Reservation is not gauranteed until payment is received!</div>";  */ }
 	else { 	die ("<div class='error'>An error occured saving your information, please try again later. ".mysql_error()."</div>"); }
@@ -155,7 +157,7 @@ foreach($_POST['juniorname'] as $name) {
 			$modified_junior = $name;
 		}
 		echo "<BR>$i ) $modified_junior (junior)";
-	$insert = mysql_query("insert into openhouse(group_name, email, group_adults, group_juniors, confirmation, openhouse_id, learn_refer, reg_refer, user_refer, create_browser, create_ip) ".
+	$insert = mysql_query("insert into learntocurl(group_name, email, group_adults, group_juniors, confirmation, openhouse_id, learn_refer, reg_refer, user_refer, create_browser, create_ip) ".
 	"values('".htmlspecialchars($modified_junior)."', '', 0, 1, '".$confirmation_number."', '".$_POST['openhouseid']."','".$learn_refer."', '".$reg_refer."', '".$user_refer."', '".$_SERVER['HTTP_USER_AGENT']."', '".$_SERVER['REMOTE_ADDR']."' ) ", $db_conn);
 	if( $insert ) { /* echo "<div class='success'>Reservation is not gauranteed until payment is received!</div>";  */ }
 	else { 	die ("<div class='error'>An error occured saving your information, please try again later. ".mysql_error()."</div>"); }
@@ -337,13 +339,13 @@ function payWithPayPal($confirmation_number, $openhousedate) {
 <input type=hidden name=custom value="<?php echo $_POST["groupname"][0]; ?>">
 <input type=hidden name=invoice value="<?php echo $confirmation_number; ?>">
 
-Payment Due: <span class='userinput'><?php echo "$". calculatePrice($_POST["adults"], $_POST["juniors"], 1) ?></span>
+Payment Due: <span class='userinput'><?php echo "$". calculatePrice($_POST["openhouseid"], $_POST["adults"], $_POST["juniors"], 1) ?></span>
 <br><input type="hidden" name="cmd" value="_xclick">
 <input type="hidden" name="business" value="<?php echo $PAYPAL_BUSINESS; ?>">
 <input type="hidden" name="lc" value="US">
 <input type="hidden" name="item_name" value="<?php echo $_POST["groupname"][0]; ?> - <?php echo $openhousedate; ?> (group of <?php echo $_POST["adults"] + $_POST["juniors"]; ?>) <?php echo $confirmation_number; ?>">
 <input type="hidden" name="button_subtype" value="services">
-<input type="hidden" name="amount" value="<?php echo calculatePrice($_POST["adults"], $_POST["juniors"], 0); ?>">
+<input type="hidden" name="amount" value="<?php echo calculatePrice($_POST["openhouseid"], $_POST["adults"], $_POST["juniors"], 0); ?>">
 <input type="hidden" name="currency_code" value="USD">
 <input type="hidden" name="shipping" value="1.00">
 <input type="hidden" name="bn" value="PP-BuyNowBF:btn_paynowCC_LG.gif:NonHosted">

@@ -1,13 +1,16 @@
-<!DOCTYPE html>
+<?php if( strlen(getenv("HTTP_REFERER")) > 0) 
+setcookie("reg_referral", getenv("HTTP_REFERER")); 
+?><!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
+	<meta name="author" content="Joe Petsche" />
+	<meta name="DC.creator" content="Joe Petsche" />
 	<title>Learn to Curl Registration</title>
 	<link href="../learntocurl.css" rel="stylesheet" type="text/css" />
-
 	<script src="//ajax.googleapis.com/ajax/libs/mootools/1.4.5/mootools-yui-compressed.js"></script>
-	<script src="jquery-ui-1.10.3/jquery-1.9.1.js"></script>
-	<script src="jquery-ui-1.10.3/ui/jquery.ui.core.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
 	<script language="Javascript" type="text/javascript">
 	
 	$(document).ready(function(){
@@ -79,7 +82,7 @@ function checkReg($id) {
 	</script>
 </head>
 
-<body onload="checkReg(document.getElementById('openhouseid').value);">
+<body>
 <div id="wrapper">
 <div id="content">
 
@@ -155,7 +158,7 @@ if( isset($_REQUEST['type']) && "editopenhouse" == $_REQUEST['type'] ) {  // edi
 <TD>Requested Event 
 <TD><select name="openhouseid" id="openhouseid" onchange="checkReg(this.value);">
 <?php
-
+	// TODO: Create built in function to print <select> and eliminate open houses that are currently full.
 	$events_result = mysql_query("select ID, EVENT_DATE, EVENT_NAME from learntocurl_dates where EVENT_DATE >= current_date() and EVENT_TYPE='L' order by EVENT_DATE ASC", $db_conn);
 	if($events_result) { //query was a success
 		while ($row = mysql_fetch_array($events_result, MYSQL_BOTH)) {
@@ -169,7 +172,7 @@ if( isset($_REQUEST['type']) && "editopenhouse" == $_REQUEST['type'] ) {  // edi
 	
 ?>
 </select>
-<TD><span id="openspace"></span></TR>
+<TD><span id="eventname"></span></TR>
 
 <TR>
 <TD>Adult Leader <TD><input type="text" name="groupname[]" id="groupname" value="<?php echo $modify_group; ?>" size="30"><td>Email <input type="text" name="email[]" id="email"  value="<?php echo $modify_email; ?>" size="30"></TR>
@@ -205,7 +208,7 @@ if( isset($_REQUEST['type']) && "editopenhouse" == $_REQUEST['type'] ) {  // edi
 <TD>Junior (8th) <font color=red size=-1><sup>*</sup></font><TD><input type="text" name="juniorname[]" id="juniorname8"  value="<?php echo '' ?>" size="30"><td> - </tr>
 
 <TR id=extra_message class=info>
-<TD colspan=3> <font color=red size=-1><sup>*</sup></font>Except for the <i>Adult Leader</i>, name and email addresses can be changed later.
+<TD colspan=3> <font color=red size=-1><sup>*</sup></font>Name and email addresses can be changed later. Participants will not automatically be emailed, if you would like them to know they are registered, please forward the registration email.
 </TD></TR>
 
 <TR>
@@ -220,8 +223,7 @@ if( isset($_REQUEST['type']) && "editopenhouse" == $_REQUEST['type'] ) {  // edi
 <option <?php if($modify_adults == 6) echo "selected"; ?>>6</option>
 <option <?php if($modify_adults == 7) echo "selected"; ?>>7</option>
 <option <?php if($modify_adults == 8) echo "selected"; ?>>8</option>
-</select> <TD></TR>
-
+</select> <TD><span id="openspace"></span></TR>
 <TR>
 <TD>21 yrs old or younger 
 <td><select name="juniors" id="juniors">
@@ -273,16 +275,46 @@ How did you hear about our Learn to Curl Event? <input type=text name="user_refe
 <!-- Plan on arriving 20 minutes prior to your scheduled start time. -->
 <?php
 
-$cookie_type = "openh_refer";
-$cookie_data = $_COOKIE[$cookie_type];
-$reg_refer   = getenv("HTTP_REFERER");
+$event_referral = "";
+$reg_referral = "";
+if( isset($_COOKIE["event_referral"]))
+	$event_referral = $_COOKIE["event_referral"];
+if( isset($_COOKIE["reg_referral"]))
+	$reg_referral = $_COOKIE["reg_referral"];
+if($DEBUG) {
+	echo "<BR>event: ".$event_referral;
+	echo "<BR>reg: ".$reg_referral;
+}
 
 //send along with registration
-echo '<input type=hidden name="learn_refer" value="'.$cookie_data.'">';
-echo '<input type=hidden name="reg_refer" value="'.$reg_refer.'">';
-
+echo '<input type=hidden name="learn_refer" value="'.$event_referral.'">';
+echo '<input type=hidden name="reg_refer" value="'.$reg_referral.'">';
 
 ?>
+<script>
+$("#openhouseid").change(function() {
+	var data = $(this).val();
+	//alert (data);
+	var requestname = $.ajax({  
+		type: "GET",  
+		url: "openhousecheck.php", 
+		data: { id: data, name: 1 }
+	});
+	requestname.done(function(msg) {  
+		//alert (msg);
+		$("#eventname").html( msg );});
+
+	var requestspace = $.ajax({  
+		type: "GET",  
+		url: "openhousecheck.php", 
+		data: { id: data }
+	});
+	requestspace.done(function(msg) {  
+		//alert (msg);
+		$("#openspace").html( msg );});
+	
+}).trigger('change');
+</script>
 </form>
 
 <hr>
@@ -300,19 +332,6 @@ Confirmation Number <input type="text" name="confnumber"  size="10"><br>
 </form
 -->
 
-<?php  
-
-// echo ecc_current_year(); // works!
-
-if( $DEBUG ) {
-print("view cookie<BR>");
-
-echo $_COOKIE[$cookie_type];
-echo "<BR> now current refer:";
-$ref = getenv("HTTP_REFERER");
-echo $ref;
-}	
-?>
 </div>
 </div>
 

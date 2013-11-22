@@ -2,7 +2,10 @@
 
 $DEBUG            = 0;
 $ERROR_MSG        = "";
-$PP_FORM_POST     = ""; // sandbox
+$L2C_PASS         = "";
+$EMAIL_FROM_ADMIN = ""; // System sends email from this address
+$EMAIL_ERRORS_TO  = ""; // If error occurs send email here. Seperate by commas if you want multiple
+$PP_FORM_POST     = "";
 $PAYPAL_BUSINESS  = "";
 $PAYPAL_USER      = "";
 $PAYPAL_PWD       = "";
@@ -29,18 +32,49 @@ function createConfirmation($group, $number) {
 	return $conf;
 }
 
-//////// August 2009 $10 for adult, $5 for junior, $20 for family (defined 1 or 2 adults and up to 4 juniors), $shipping = 1 include in price, 0. Don't include.
-//////// UPDATE Database has prices in it, however for quick edit, I will modify this file instead. $20/person $10/junior $40/famil.y
-function calculatePrice($adults, $juniors, $with_shipping) {
-	$shipping = 1;
-	$price = ($adults * 20) + ($juniors * 10);
-	if(($price > 40) && ($adults <= 2)) {
-		$price = 40; // family
+// August 2009 $10 for adult, $5 for junior, $20 for family (defined 1 or 2 adults and up to 4 juniors), $with_shipping will be added to price if included
+function calculatePrice($id, $adults, $juniors, $with_shipping=0) {
+	$p_adult    = 20; // defaults
+	$p_junior   = 10;
+	$p_discount = 40;
+	$final_price = 0;
+	$disc_applied = 0;
+
+	// get prices from Database
+	$query = "select PRICE_ADULT, PRICE_JUNIOR, PRICE_DISC from learntocurl_dates where ID = ".$id;
+	$result = mysql_query($query);
+	if( $result==FALSE )
+		die('<div class="error">Could not execute <span name="mysql_error" title="'.mysql_error().'">request for price information</span>. </div>');
+	$p_adult    = mysql_result($result, 0, 0);
+	$p_junior   = mysql_result($result, 0, 1);
+	$p_discount = mysql_result($result, 0, 2);
+	
+	$remain_a = $adults;
+	$remain_j = $juniors;
+	
+	if( $p_discount > 0 ) {
+		while ($remain_a >= 1 && $remain_j >= 1 && !($remain_a == 1 && $remain_j == 1) ) {
+			// start discount
+			$disc_applied ++;
+			$remain_a = $remain_a - 2;
+			$remain_j = $remain_j - 4;
+			$final_price += $p_discount;
+		}
+	} // apply discounts
+	
+	while ( $remain_a > 0) {
+		$remain_a--;
+		$final_price += $p_adult;
 	}
-	if($with_shipping == 1) 
-		$price += $shipping;
-		
-	return $price .".00";
+	while ( $remain_j > 0) {
+		$remain_j--;
+		$final_price += $p_junior;
+	}
+	
+	if($with_shipping > 0) 
+		$final_price += $with_shipping;
+	
+	return $final_price;
 }
 
 // no delay -  Typically for Admin display lists
@@ -66,81 +100,68 @@ function getAvailableOpenhouses_delay($hours) {
 
 function registeredOpenhouseCount($id) {
 	// Check if registration is open for given event......
-	$query = "select (select max_guests from learntocurl_dates where ID = ".$id.") as MAX, (select sum(group_adults+group_juniors) from learntocurl where OPENHOUSE_ID = ".$id." and PAID_DOLLARS > 0 ) as PLAYERS";
+	$query = "select coalesce(sum(group_adults+group_juniors),0) as REG from learntocurl where OPENHOUSE_ID = ".$id." and (PAID_DOLLARS > 0 or PAID_TYPE = 'free')";
 	
 	$spaceavail = mysql_query($query);
-	if( !$spaceavail ) {
+	if( $spaceavail==FALSE ) {
 		if($bError)
-			die("<div class='error'>Could not execute request for Open House availability: " . mysql_error(). "</div>");
+			die('<div class="error">Could not execute <span name="mysql_error" title="'.mysql_error().'">request for event registration</span>. </div>');
 		else 
 			die();
 	}
-	$stringresult = mysql_result($spaceavail, 0, 0);
-	if( !$stringresult) {
-		if($bError)
-			die ("<div class='error'>Cannot retrieve Open House availability: ".mysql_error()."</div>");
-		else 
-			die();
-	}
-	$max_guests = $stringresult;
-	$reg_players  = mysql_result($spaceavail, 0, 1)?mysql_result($spaceavail, 0, 1):0;
-	
+	$reg_players = mysql_result($spaceavail, 0, 0);	
 	return $reg_players;
 }
 
-
+// return could be negative if oversold.
 function availableOpenhouseCountNoError($id) { // displays nothing if error
 	return availableOpenhouseCountErrorMinus($id, 0, "");
 }
-
-
 function availableOpenhouseCount($id) { // displays errors
 	return availableOpenhouseCountErrorMinus($id, 1, "");
 }
-
-// $confirmation - record to exclude from count
+// $confirmation - record to exclude from count // unused 
 function availableOpenhouseCountErrorMinus($id, $bError, $confirmation) {
 	// Check if registration is open for given event......
-	$query = "select (select max_guests from learntocurl_dates where ID = ".$id.") as MAX, (select sum(group_adults+group_juniors) from learntocurl where OPENHOUSE_ID = ".$id." and PAID_DOLLARS > 0 and CONFIRMATION != '".$confirmation."') as PLAYERS";
+	$availableSpace = 0;
+	$where_confirmation = "";
+	if (strlen ( $confirmation) > 0 ) 
+		$where_confirmation = "and CONFIRMATION != '".$confirmation."'";
+	
+	$query = "select (select coalesce(sum(group_adults+group_juniors),0) from learntocurl where OPENHOUSE_ID = ".$id." and (PAID_DOLLARS > 0 or PAID_TYPE = 'free') ".$where_confirmation.") as REG, (select max_guests from learntocurl_dates where ID = ".$id.") as MAX ";
 	//echo "<div class='error'>" .$query. "</DIV>";
 	
 	$spaceavail = mysql_query($query);
-	if( !$spaceavail ) {
+	if( $spaceavail == FALSE) {
 		if($bError)
-			die("<div class='error'>Could not execute request for Open House availability: " . mysql_error(). "</div>");
+			die('<div class="error">Could not execute <span name="mysql_error" title="'. mysql_error().'">request for event availability(-)</span>. </div>');
 		else 
 			die();
+	} else {
+		$reg_players = mysql_result($spaceavail, 0, 0);
+		$max_guests = mysql_result($spaceavail, 0, 1);
+		$availableSpace = $max_guests - $reg_players;
 	}
-	$stringresult = mysql_result($spaceavail, 0, 0);
-	if( !$stringresult) {
-		if($bError)
-			die ("<div class='error'>Cannot retrieve Open House availability: ".mysql_error()."</div>");
-		else 
-			die();
-	}
-	$max_guests = $stringresult;
-	$reg_players  = mysql_result($spaceavail, 0, 1)?mysql_result($spaceavail, 0, 1):0;
-	
-	return $max_guests - $reg_players;
+	return $availableSpace;
 }
 
 
 function attendedOpenhouseCountError($id, $bError) {
 	// Check if registration is open for given event......
-	$query = "select sum(group_adults+group_juniors) from learntocurl where OPENHOUSE_ID = ".$id." and PAID_DOLLARS > 0 and ATTENDED = 1";
+	$query = "select sum(group_adults+group_juniors) from learntocurl where OPENHOUSE_ID = ".$id." and (PAID_DOLLARS > 0 or PAID_TYPE = 'free') and ATTENDED = 1";
 	//echo "<div class='error'>" .$query. "</DIV>";
 	
 	$attended = mysql_query($query);
 	if( !$attended ) {
 		if($bError)
-			die("<div class='error'>Could not execute request for Open House attended count: " . mysql_error(). "</div>");
+			die("<div class='error'>Could not execute request for event attended count: " . mysql_error(). "</div>");
 		else 
 			return -1;
 	}
 	$stringresult = mysql_result($attended, 0, 0);
 	if( !$stringresult) {
 		if($bError) {
-			// die ("<div class='error'>Cannot retrieve Open House attended count (null): ".mysql_error()."</div>");
+			// die ("<div class='error'>Cannot retrieve event attended count (null): ".mysql_error()."</div>");
 			echo "Null result returned";
 			return 0;
 		}
@@ -182,5 +203,53 @@ function setFlag($confirmation, $field, $value) {
 		return "<div class='error'>Error</div>";
 }
 
+
+class Auth
+{
+	// property declaration
+	public $var = "a default value";
+	public $db_auth;
+	public $current_user;
+	
+    function __construct() {
+		$this->var = "In BaseClass constructor\n";
+	}
+	
+	public function start() {
+		if ( isset($_POST['pwd']) ) {
+			// set session variable
+			$_SESSION['pwd'] = $_POST['pwd'];
+		}
+		if ( !isset($_SESSION['pwd']) ) {
+			// Show password prompt
+			$this->showLogin();
+		}
+	}
+	
+	public function getAdmin() {
+		global $L2C_PASS;
+		// use session variables
+		if( isset($_SESSION['pwd']) == true )  {
+			if( strcmp($_SESSION['pwd'], $L2C_PASS)==0 ) {
+				return true;
+			}
+			else {	// Incorrect password
+				$this->showLogin();
+				return false;
+			}
+		} 
+		else
+		{	// don't allow access
+			return false;
+		}
+	}
+	
+	public function showLogin() {
+		echo "<HTML><form method='post'>\n";
+		echo "<input type='password' name='pwd' size='12'>\n";
+		echo "<input type='submit'></form>\n</HTML>";
+	}
+
+}
 
 ?>

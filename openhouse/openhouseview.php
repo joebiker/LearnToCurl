@@ -1,6 +1,24 @@
+<?php
+
+session_name('Private');
+session_start();
+
+include '../common.php';
+include "../database.php";
+
+// AUTH //
+	$a = new Auth();
+	$a->start();
+	if (! $a->getAdmin()) {
+		exit();
+	}
+//////////
+
+?>
 <HTML>
 <HEAD>
-<title>Learn to Curl Admin</title>
+<title>Learn to Curl Administration - Event</title>
+	<link href="../learntocurl.css" rel="stylesheet" type="text/css" />
 	<link href="admin.css" rel="stylesheet" type="text/css" />
 	<script src="//ajax.googleapis.com/ajax/libs/mootools/1.4.5/mootools-yui-compressed.js"></script>
 	<script type="text/javascript" language="Javascript">
@@ -65,12 +83,9 @@ function editOpenHouse($var0,$var1,$var2,$var3,$var4,$var5) {
 </head>
 <body>
 
-<h1>Learn to Curl Administration</h1>
+<h1>Learn to Curl - Event</h1>
 
 <?php
-
-include '../common.php';
-include '../database.php';
 
 if( isset($_POST['type']) && (strlen($_POST['type']) > 4) ) {
 	$db_conn = connect_db($DB_SERVER, $DB_USER, $DB_PASS, $DB_NAME);	// from include
@@ -201,8 +216,17 @@ if( isset($_POST['type']) && (strlen($_POST['type']) > 4) ) {
 	<input type="hidden" value="Email Report">
 	</form>
 	
+	<?php 
+	$openhouseid = 0;
+	if ( isset($_REQUEST['openhouseid']) )
+		$openhouseid = $_REQUEST['openhouseid'];
+	if ( isset($_REQUEST['view']) )
+		$openhouseid = $_REQUEST['view'];
+	?>
+	
 	<ul>
-	<li><a href="openhouseemailreport.php">Email Report</a>
+	<li><a href="openhouseemailreport.php<?php if($openhouseid > 0 ) echo "?openhouseid=".$openhouseid;  ?>">Email Report</a>
+	<li><a href="openhousereferralreport.php">Referral Report</a>
 	</ul>
 </div>
 
@@ -215,11 +239,18 @@ $db_conn = connect_db($DB_SERVER, $DB_USER, $DB_PASS, $DB_NAME);	// from include
 $result = false;
 // only display the selected open house -- ALLOW view form submit
 if(isset($_REQUEST['view']))
-	$result = mysql_query("select EVENT_NAME, EVENT_DATE, MAX_GUESTS, ID, COMMENTS from learntocurl_dates where id = ".$_REQUEST['view']." order by EVENT_DATE ASC", $db_conn);
+	$result = mysql_query("select EVENT_NAME, EVENT_DATE, MAX_GUESTS, ID, COMMENTS, PRICE_ADULT, PRICE_JUNIOR, PRICE_DISC from learntocurl_dates where id = ".$_REQUEST['view']." order by EVENT_DATE ASC", $db_conn);
 
 if($result && isset($_REQUEST['view']) ) { //query was a success
 	//echo "statement hit";
+	$price_adult = 0;
+	$price_junior = 0;
+	$price_disc = 0;
+	
 	while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
+		$price_adult = $row[5];
+		$price_junior = $row[6];
+		$price_disc = $row[7];
 		$phpdate = strtotime( $row[1] );
 		echo '<table class="headertable">'; 								// Build HEADERS FOR ALL OPEN HOUSES
 	    echo '<tr><TH class="headertable">'. $row[0] .'&nbsp;';
@@ -229,9 +260,9 @@ if($result && isset($_REQUEST['view']) ) { //query was a success
 	    //	    ."<TH class=headertable>Limit $row[2] &nbsp;</TR>";
 	    echo "<TR><TD colspan='3' class=headertable>"; //<div id='myPanel$row[3]'>&nbsp;";  // IE6 needs the &nbsp;
 		
-		echo $row[4];
-		echo "<table class='datatable'>";								// Build DATA ROWS PER-EACH OPEN HOUSE
-		echo "<TR><TH>View Details<TH>Name<TH>Adults<TH>Jr.<TH>Paid Type<TH>Paid Dollars<TH>Attended<TH>Waiver</TR>";
+		echo "\n<div class='comments'>$row[4]</div>";
+		echo "\n<table class='datatable'>";								// Build DATA ROWS PER-EACH OPEN HOUSE
+		echo "\n<TR><TH>View Details<TH>Name<TH>Adults<TH>Jr.<TH>Paid Type<TH>Paid Dollars<TH>Attended<TH>Waiver</TR>";
 		
 		$resultdata = mysql_query("select group_name, group_adults, group_juniors, email, paid_dollars, paid_type, confirmation, attended, waiver, user_refer, learn_refer, reg_refer from learntocurl, learntocurl_dates where id = openhouse_id AND id = $row[3] order by EVENT_DATE ASC, attended desc, waiver desc, confirmation, group_adults desc, group_name", $db_conn);
 		if($resultdata) { //query was a success
@@ -266,6 +297,7 @@ if($result && isset($_REQUEST['view']) ) { //query was a success
 		echo '<input type="hidden" name="type" value="newguest">';
 		echo '<input type="hidden" name="openhouseid" value="'.$row[3].'">';
 		
+		echo '<TABLE width="100%" border=0><TR><TD valign=top>'; // Add Attendee
 		echo '<table>';
 		echo '<tr><th>Add</th><th>Attendee</th></tr>';
 	    echo '<tr><td>Group Name: <td><input type=text name="groupname" id="groupname">';
@@ -275,6 +307,7 @@ if($result && isset($_REQUEST['view']) ) { //query was a success
 	    echo '<select name="paid_type"><option value="">Not Paid</option>';
 	    echo '<option value="cash">Cash</option>';
 	    echo '<option value="check">Check</option>';
+	    echo '<option value="free">Free</option>';
 	    echo '</select>';
 	    echo '<tr><td>Attended: <td><input type="checkbox" name="attended" id="attended">';
 	    echo '<tr><td>Waiver: <td><input type="checkbox" name="waiver" id="waiver">';
@@ -283,7 +316,17 @@ if($result && isset($_REQUEST['view']) ) { //query was a success
 	    echo '<tr><td><td><input class="addbutton" type=submit value="add">';
 		echo '</form>';//&nbsp;</div>'; // IE6 needs the &nbsp; 
 	    echo "</td></tr></table>";
+	    echo '</TD><TD valign=top>'; // Price info
 	    
+	    echo '<table><th>&nbsp;</th><th>Price</th></tr>';
+	    echo '<tr><td>Adult:&nbsp;&nbsp;</td><td>$'.$price_adult.'</td></tr>';
+	    echo '<tr><td>Junior:&nbsp;&nbsp;</td><td>$'.$price_junior.'</td></tr>';
+	    echo '<tr><td>Discount:&nbsp;&nbsp;</td><td>$'.$price_disc.'</td></tr>';
+	    echo '<tr><td colspan=2 class="info">Discount price for up to 2 adults <BR>and 4 children, calculated at checkout.</td></tr>';
+	    echo '</table>';
+	    
+	    
+	    echo '</TD></TR>';
 	    
 	    echo '</tr>'; //class="headertable">
 		echo '</table>'; // class="headertable">
@@ -292,7 +335,7 @@ if($result && isset($_REQUEST['view']) ) { //query was a success
 } // if
 
 ?>
-
+</tr></table>
 <div id=search>
 Search by <b>confirmation number</b> or <b>group name</b>. <i>NOTE: The first occurrence will be returned if multiple exist.</I>
 <form method="post" action="openhousesearch.php" name="search">

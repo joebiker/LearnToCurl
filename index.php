@@ -1,7 +1,11 @@
-<!DOCTYPE html>
+<?php if( strlen(getenv("HTTP_REFERER")) > 0) 
+setcookie("event_referral", getenv("HTTP_REFERER"));
+?><!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
+	<meta name="author" content="Joe Petsche" />
+	<meta name="DC.creator" content="Joe Petsche" />
 	<title>Learn to Curl</title>
 	<link href="learntocurl.css" rel="stylesheet" type="text/css" />
 </head>
@@ -27,7 +31,7 @@ include "common.php";
 include "database.php";
 $db_conn = connect_db($DB_SERVER, $DB_USER, $DB_PASS, $DB_NAME);	// from include
 
-$myarray = getAvailableOpenhouses_delay(2);
+$myarray = getAvailableOpenhouses_delay(0);
 if( count($myarray) >0 ) {
 	echo "\n<table class=eventList>";
 	foreach($myarray as $event) {
@@ -58,7 +62,14 @@ if( count($myarray) >0 ) {
 </div> <!-- main -->
 
 <br clear="all" />
+<?php
 
+$event_referral = "";
+if( isset($_COOKIE["event_referral"]))
+	$event_referral = $_COOKIE["event_referral"];
+if($DEBUG) echo $event_referral;
+
+?>
 </div> <!-- wrapper -->
 </body>
 </html>
