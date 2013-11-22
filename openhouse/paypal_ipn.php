@@ -75,9 +75,14 @@ function recordPayment() {
 				return "error";	
 			}
 			
+			// cannot have duplicate Confromation numbers outside of a given registration.
 			$db_conn = connect_db($DB_SERVER, $DB_USER, $DB_PASS, $DB_NAME);	// from include
-			$query = "update learntocurl set paid_type='paypal', paid_dollars=".$payment.", paid_date=now() where confirmation='".$lookup."' LIMIT 1";
-			
+/*			$query = "select sum(group_adults), sum(group_juniors) from learntocurl where confirmation = confirmation='".$lookup."' ";
+			$result = mysql_query($query);
+			$attendance = mysql_fetch_array($result);
+			$total_attend = intval($attendance[0]) + intval($attendance[1]);
+			$payment_per = intval($payment)/$total_attend;
+*/			$query = "update learntocurl set paid_type='paypal', paid_dollars=".$payment.", PAYPAL_TX_ID='".$_POST['txn_id']."', paid_date=now() where confirmation='".$lookup."' ";
 			$update = mysql_query($query, $db_conn);
 			if( $update ) {
 				fwrite($handle, "DATABASE record ".$lookup." UPDATED! \n");
@@ -139,7 +144,7 @@ function recordPayment() {
 	return "success";
 }
 
-
+	$emailtext = '';
 	$filename = 'ipn_log.txt';
 	if (!$handle = fopen($filename, 'a')) {
          //echo "Cannot open file ($filename)";
@@ -160,7 +165,7 @@ function recordPayment() {
 		{ $get_magic_quotes_exits = true;}
 	foreach ($_POST as $key => $value)
 		// Handle escape characters, which depends on setting of magic quotes
-		{ if($get_magic_quotes_exists == true && get_magic_quotes_gpc() == 1)
+		{ if(isset($get_magic_quotes_exists) && get_magic_quotes_gpc() == 1)
 			{ $value = urlencode(stripslashes($value));
 		} else {
 			$value = urlencode($value);

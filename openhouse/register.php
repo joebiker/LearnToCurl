@@ -315,9 +315,6 @@ else {
 }
 ?>
 
-<script language="Javascript" type="text/javascript">
-// checkReg(<?php echo $reg_details[8]; ?> );
-</script>
 
 </div>
 </div>

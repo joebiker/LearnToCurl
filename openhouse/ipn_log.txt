@@ -1,0 +1,305 @@
+Nov-22 07:33:58 - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+payment_status: Complete
+payment_currency: USD
+payment exists.
+DATABASE record JLMB3 UPDATED! 
+Emailing: joebiker@gmail.com 
+header: From: $EMAIL_FROM_ADMIN
+Reply-To: $EMAIL_FROM_ADMIN
+X-Mailer: PHP/5.2.17
+Subject: Learn to Curl confirmation number
+Thank you, Joe, 
+
+Your payment has been received: $4.00
+
+Your confirmation number is: JLMB3.
+
+
+
+Status INVALID
+mc_gross = 4.00
+invoice = JLMB3
+protection_eligibility = Eligible
+address_status = confirmed
+payer_id = 95VMYWWCF3JC6
+tax = 0.00
+address_street = 1 Main St
+payment_date = 07:33:51 Nov 22, 2013 PST
+payment_status = Completed
+charset = windows-1252
+address_zip = 95131
+first_name = Joe
+mc_fee = 0.42
+address_country_code = US
+address_name = Joe Petsche
+notify_version = 3.7
+custom = Joe
+payer_status = verified
+business = joebiker-facilitator@gmail.com
+address_country = United States
+address_city = San Jose
+quantity = 1
+verify_sign = A2ULFffa83-nsSi7-m7hmwm403BoA7M.Uj7UvL1eKJL2B4E02VeBAwlk
+payer_email = joe@gotawd.com
+txn_id = 1GP82966XY3274255
+payment_type = instant
+last_name = Petsche
+address_state = CA
+receiver_email = joebiker-facilitator@gmail.com
+payment_fee = 0.42
+receiver_id = GPX8HGKQQUWXW
+txn_type = web_accept
+item_name = Joe - 2013-11-22 08:00:00 (group of 3) JLMB3
+mc_currency = USD
+item_number = 
+residence_country = US
+test_ipn = 1
+handling_amount = 0.00
+transaction_subject = Joe
+payment_gross = 4.00
+shipping = 1.00
+ipn_track_id = 969cd4f818a0d
+Nov-22 07:53:01 - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+payment_status: Complete
+payment_currency: USD
+payment exists.
+ Attempt on:TPMS5. DATABASE ERROR You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ' paid_date=now() where confirmation='TPMS5'' at line 1
+Emailing: joebiker@gmail.com 
+header: From: treasurer@domain.com
+Reply-To: treasurer@domain.com
+X-Mailer: PHP/5.2.17
+Subject: Learn to Curl confirmation number
+Thank you, Test2, 
+
+Your payment has been received: $3.00
+
+Your confirmation number is: TPMS5.
+http://www.evergreencurling.com/learn/openhouse/register.php?type=editopenhouse&confnumber=TPMS5
+
+
+Status INVALID
+mc_gross = 3.00
+invoice = TPMS5
+protection_eligibility = Eligible
+address_status = confirmed
+payer_id = 95VMYWWCF3JC6
+tax = 0.00
+address_street = 1 Main St
+payment_date = 07:53:00 Nov 22, 2013 PST
+payment_status = Completed
+charset = windows-1252
+address_zip = 95131
+first_name = Joe
+mc_fee = 0.39
+address_country_code = US
+address_name = Joe Petsche
+notify_version = 3.7
+custom = Test2
+payer_status = verified
+business = joebiker-facilitator@gmail.com
+address_country = United States
+address_city = San Jose
+quantity = 1
+verify_sign = AFcWxV21C7fd0v3bYYYRCpSSRl31AZI3bRyNepnlvTHMs1dyqozfDhNv
+payer_email = joe@gotawd.com
+txn_id = 00563783L7654810F
+payment_type = instant
+last_name = Petsche
+address_state = CA
+receiver_email = joebiker-facilitator@gmail.com
+payment_fee = 0.39
+receiver_id = GPX8HGKQQUWXW
+txn_type = web_accept
+item_name = Test2 - 2013-11-22 08:00:00 (group of 5) TPMS5
+mc_currency = USD
+item_number = 
+residence_country = US
+test_ipn = 1
+handling_amount = 0.00
+transaction_subject = Test2
+payment_gross = 3.00
+shipping = 1.00
+ipn_track_id = e2deb6b496837
+Nov-22 07:58:09 - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+payment_status: Complete
+payment_currency: USD
+payment exists.
+ Attempt on:TMLL4. DATABASE ERROR You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ' paid_date=now() where confirmation='TMLL4'' at line 1
+Emailing: joe@gotawd.com 
+header: From: treasurer@domain.com
+Reply-To: treasurer@domain.com
+X-Mailer: PHP/5.2.17
+Subject: Learn to Curl confirmation number
+Thank you, Test3, 
+
+Your payment has been received: $2.00
+
+Your confirmation number is: TMLL4.
+http://www.evergreencurling.com/learn/openhouse/register.php?type=editopenhouse&confnumber=TMLL4
+
+
+Status INVALID
+mc_gross = 2.00
+invoice = TMLL4
+protection_eligibility = Eligible
+address_status = confirmed
+payer_id = 95VMYWWCF3JC6
+tax = 0.00
+address_street = 1 Main St
+payment_date = 07:58:06 Nov 22, 2013 PST
+payment_status = Completed
+charset = windows-1252
+address_zip = 95131
+first_name = Joe
+mc_fee = 0.36
+address_country_code = US
+address_name = Joe Petsche
+notify_version = 3.7
+custom = Test3
+payer_status = verified
+business = joebiker-facilitator@gmail.com
+address_country = United States
+address_city = San Jose
+quantity = 1
+verify_sign = AFcWxV21C7fd0v3bYYYRCpSSRl31APKv7L7UF6UFg6TLVIIpkVkMYocK
+payer_email = joe@gotawd.com
+txn_id = 04S42754GV5172505
+payment_type = instant
+last_name = Petsche
+address_state = CA
+receiver_email = joebiker-facilitator@gmail.com
+payment_fee = 0.36
+receiver_id = GPX8HGKQQUWXW
+txn_type = web_accept
+item_name = Test3 - 2013-11-22 08:00:00 (group of 4) TMLL4
+mc_currency = USD
+item_number = 
+residence_country = US
+test_ipn = 1
+handling_amount = 0.00
+transaction_subject = Test3
+payment_gross = 2.00
+shipping = 1.00
+ipn_track_id = b03ae0e9d69ce
+Nov-22 08:04:07 - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+payment_status: Complete
+payment_currency: USD
+payment exists.
+ Attempt on:TCTG3. DATABASE ERROR You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ' PAYPAL_TX_ID=5HX014989X514233W, paid_date=now() where confirmation='TCTG3'' at line 1
+Emailing: joe@gotawd.com 
+header: From: treasurer@domain.com
+Reply-To: treasurer@domain.com
+X-Mailer: PHP/5.2.17
+Subject: Learn to Curl confirmation number
+Thank you, Test4, 
+
+Your payment has been received: $2.00
+
+Your confirmation number is: TCTG3.
+http://www.evergreencurling.com/learn/openhouse/register.php?type=editopenhouse&confnumber=TCTG3
+
+
+Status INVALID
+mc_gross = 2.00
+invoice = TCTG3
+protection_eligibility = Eligible
+address_status = confirmed
+payer_id = 95VMYWWCF3JC6
+tax = 0.00
+address_street = 1 Main St
+payment_date = 08:04:05 Nov 22, 2013 PST
+payment_status = Completed
+charset = windows-1252
+address_zip = 95131
+first_name = Joe
+mc_fee = 0.36
+address_country_code = US
+address_name = Joe Petsche
+notify_version = 3.7
+custom = Test4
+payer_status = verified
+business = joebiker-facilitator@gmail.com
+address_country = United States
+address_city = San Jose
+quantity = 1
+verify_sign = AiPC9BjkCyDFQXbSkoZcgqH3hpacAW6dPyoZiV5PZo9i9bei8.Njy1Na
+payer_email = joe@gotawd.com
+txn_id = 5HX014989X514233W
+payment_type = instant
+last_name = Petsche
+address_state = CA
+receiver_email = joebiker-facilitator@gmail.com
+payment_fee = 0.36
+receiver_id = GPX8HGKQQUWXW
+txn_type = web_accept
+item_name = Test4 - 2013-11-22 08:00:00 (group of 3) TCTG3
+mc_currency = USD
+item_number = 
+residence_country = US
+test_ipn = 1
+handling_amount = 0.00
+transaction_subject = Test4
+payment_gross = 2.00
+shipping = 1.00
+ipn_track_id = 2b7ec924414b5
+Nov-22 08:12:42 - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+payment_status: Complete
+payment_currency: USD
+payment exists.
+DATABASE record JIEF1 UPDATED! 
+Emailing: joe@gotawd.com 
+header: From: treasurer@domain.com
+Reply-To: treasurer@domain.com
+X-Mailer: PHP/5.2.17
+Subject: Learn to Curl confirmation number
+Thank you, Jim, 
+
+Your payment has been received: $2.00
+
+Your confirmation number is: JIEF1.
+http://www.evergreencurling.com/learn/openhouse/register.php?type=editopenhouse&confnumber=JIEF1
+
+
+Status INVALID
+mc_gross = 2.00
+invoice = JIEF1
+protection_eligibility = Eligible
+address_status = confirmed
+payer_id = 95VMYWWCF3JC6
+tax = 0.00
+address_street = 1 Main St
+payment_date = 08:12:38 Nov 22, 2013 PST
+payment_status = Completed
+charset = windows-1252
+address_zip = 95131
+first_name = Joe
+mc_fee = 0.36
+address_country_code = US
+address_name = Joe Petsche
+notify_version = 3.7
+custom = Jim
+payer_status = verified
+business = joebiker-facilitator@gmail.com
+address_country = United States
+address_city = San Jose
+quantity = 1
+verify_sign = AL5VSAgJIM21gQaUlFcA.g51V4IxA5.hzudj5AEKCtaKucDDe3kp2cC3
+payer_email = joe@gotawd.com
+txn_id = 6KW76567S9473624L
+payment_type = instant
+last_name = Petsche
+address_state = CA
+receiver_email = joebiker-facilitator@gmail.com
+payment_fee = 0.36
+receiver_id = GPX8HGKQQUWXW
+txn_type = web_accept
+item_name = Jim - 2013-11-22 09:00:00 (group of 1) JIEF1
+mc_currency = USD
+item_number = 
+residence_country = US
+test_ipn = 1
+handling_amount = 0.00
+transaction_subject = Jim
+payment_gross = 2.00
+shipping = 1.00
+ipn_track_id = 6c93b191f1435
