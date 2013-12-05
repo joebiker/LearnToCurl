@@ -5,6 +5,7 @@ session_start();
 
 include '../common.php';
 include "../database.php";
+include "cEvent.php";
 
 // AUTH //
 	$a = new Auth();
@@ -237,9 +238,13 @@ if( isset($_POST['type']) && (strlen($_POST['type']) > 4) ) {
 $db_conn = connect_db($DB_SERVER, $DB_USER, $DB_PASS, $DB_NAME);	// from include
 
 $result = false;
+$event = null;
 // only display the selected open house -- ALLOW view form submit
-if(isset($_REQUEST['view']))
+if(isset($_REQUEST['view'])) {
 	$result = mysql_query("select EVENT_NAME, EVENT_DATE, MAX_GUESTS, ID, COMMENTS, PRICE_ADULT, PRICE_JUNIOR, PRICE_DISC from learntocurl_dates where id = ".$_REQUEST['view']." order by EVENT_DATE ASC", $db_conn);
+	$event = new Event($_REQUEST['view']); // TODO: build this out...
+}
+	
 
 if($result && isset($_REQUEST['view']) ) { //query was a success
 	//echo "statement hit";
@@ -286,7 +291,7 @@ if($result && isset($_REQUEST['view']) ) { //query was a success
 			    //echo "<td>$rowdata[6]&nbsp;"; // confirm
 			    //echo "<td>$rowdata[3]&nbsp;"; // email
 			    //echo '<td style="overflow: hidden;" title="'.$rowdata[10].'">'.$rowdata[9].'&nbsp;</tr>'; // Howd you hear?
-			    echo '</tr>';
+			    echo "</tr>\n";
 			}
 		}
 		echo '</table>';
@@ -306,6 +311,7 @@ if($result && isset($_REQUEST['view']) ) { //query was a success
 	    echo '<tr><td>Paid: <td><input type=text name="paid" id="paid" value="0" size="3"> ';
 	    echo '<select name="paid_type"><option value="">Not Paid</option>';
 	    echo '<option value="cash">Cash</option>';
+	    echo '<option value="check">Credit</option>';
 	    echo '<option value="check">Check</option>';
 	    echo '<option value="free">Free</option>';
 	    echo '</select>';
@@ -316,20 +322,21 @@ if($result && isset($_REQUEST['view']) ) { //query was a success
 	    echo '<tr><td><td><input class="addbutton" type=submit value="add">';
 		echo '</form>';//&nbsp;</div>'; // IE6 needs the &nbsp; 
 	    echo "</td></tr></table>";
-	    echo '</TD><TD valign=top>'; // Price info
+	    echo "</TD><TD valign=top>"; // Price info
 	    
-	    echo '<table><th>&nbsp;</th><th>Price</th></tr>';
+	    echo '<table><th>&nbsp;</th><th align=left>Price</th></tr>';
 	    echo '<tr><td>Adult:&nbsp;&nbsp;</td><td>$'.$price_adult.'</td></tr>';
 	    echo '<tr><td>Junior:&nbsp;&nbsp;</td><td>$'.$price_junior.'</td></tr>';
 	    echo '<tr><td>Discount:&nbsp;&nbsp;</td><td>$'.$price_disc.'</td></tr>';
 	    echo '<tr><td colspan=2 class="info">Discount price for up to 2 adults <BR>and 4 children, calculated at checkout.</td></tr>';
 	    echo '</table>';
 	    
+	    echo "\n<BR><P><a href='openhouseuseradd.php?".$_SERVER['QUERY_STRING']."'>Self Service Add >></a><BR><font size='-1'>Enter <b><i>done</i></b> in the name field to return.</font></P>";
 	    
 	    echo '</TD></TR>';
 	    
 	    echo '</tr>'; //class="headertable">
-		echo '</table>'; // class="headertable">
+		echo "</table>\n"; // class="headertable">
 	    
 	} // while
 } // if

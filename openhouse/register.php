@@ -7,9 +7,10 @@
 	<title>Pending Registration</title>
 	<link href="../learntocurl.css" rel="stylesheet" type="text/css" />
 </head>
-<BODY>
+<body>
+
 <div id="wrapper">
-<div id="content">
+<div id="main">
 
 <h1>Learn to Curl Registration</h1>
 
@@ -17,7 +18,6 @@
 include '../common.php';
 include '../database.php';
 
-$email_from_admin = "money@abc.org";  // Email is sent from this persom -- treasurer or l2c admin
 $confirmation_number = "";
 $errorFullOpenHouse =	"Maximum amount of paid guests, payment cannot be accepted for this event.".
 						"You can showup in person, to see if a spot opens up on the day of any event.";
@@ -49,7 +49,7 @@ if( isset($_POST['type']) && "newopenhouse" == $_POST['type'] ) { // continue wi
 	if( $_POST['type'] == "modifyopenhouse" ) {
 		// This needs to be re-written now that multiple users are added to the registration JVP-July-2013
 /*		
-		$query = "update openhouse set group_name='".$_POST['groupname']."', email='".$_POST['email']."', group_adults=".$_POST['adults'].", group_juniors=".$_POST['juniors'].", openhouse_id=".$_POST['openhouseid'].", edit_count=edit_count+1, edit_ip='".$_SERVER['REMOTE_ADDR']."', edit_date=now() where confirmation = '".$confirmation_number."'";
+		$query = "update learntocurl set group_name='".$_POST['groupname']."', email='".$_POST['email']."', group_adults=".$_POST['adults'].", group_juniors=".$_POST['juniors'].", openhouse_id=".$_POST['openhouseid'].", edit_count=edit_count+1, edit_ip='".$_SERVER['REMOTE_ADDR']."', edit_date=now() where confirmation = '".$confirmation_number."'";
 		
 		$update = mysql_query($query, $db_conn);
 		if( $update ) {
@@ -127,11 +127,9 @@ Confirmation number: <span class='userinput'><?php echo $confirmation_number; ?>
 <P>
 <?php payWithPayPal($confirmation_number, $openhouse[0]);
 
-// print_r($_POST['groupname']);
-echo "<BR>";
+if($DEBUG)	echo "<div class=debug >";
+else 		echo "<div class=debug style='display:none;'>";
 
-//$i=0;
-//foreach($_POST['groupname'] as $name) {
 for ( $i=0; $i < count($_POST['groupname']); $i++) {
 	$modified_name = "Unknown";
 	if( $i < $_POST['adults'] ) {   // 1 based vs 0 based comparrison
@@ -139,14 +137,12 @@ for ( $i=0; $i < count($_POST['groupname']); $i++) {
 			$modified_name = $_POST['groupname'][$i];
 		}
 		echo "<BR>$i ) $modified_name.  Email: ".$_POST['email'][$i];
-	$insert = mysql_query("insert into learntocurl(group_name, email, group_adults, group_juniors, confirmation, openhouse_id, learn_refer, reg_refer, user_refer, create_browser, create_ip) ".
-	"values('".htmlspecialchars($modified_name)."', '".htmlspecialchars($_POST['email'][$i])."', 1, 0, '".$confirmation_number."', '".$_POST['openhouseid']."', '".$learn_refer."', '".$reg_refer."', '".$user_refer."', '".$_SERVER['HTTP_USER_AGENT']."', '".$_SERVER['REMOTE_ADDR']."' ) ", $db_conn);
-	if( $insert ) { /* echo "<div class='success'>Reservation is not gauranteed until payment is received!</div>";  */ }
-	else { 	die ("<div class='error'>An error occured saving your information, please try again later. ".mysql_error()."</div>"); }
-
+		$insert = mysql_query("insert into learntocurl(group_name, email, group_adults, group_juniors, confirmation, openhouse_id, learn_refer, reg_refer, user_refer, create_browser, create_ip) ".
+		"values('".htmlspecialchars($modified_name)."', '".htmlspecialchars($_POST['email'][$i])."', 1, 0, '".$confirmation_number."', '".$_POST['openhouseid']."', '".$learn_refer."', '".$reg_refer."', '".$user_refer."', '".$_SERVER['HTTP_USER_AGENT']."', '".$_SERVER['REMOTE_ADDR']."' ) ", $db_conn);
+		if( $insert ) { /* echo "<div class='success'>Reservation is not gauranteed until payment is received!</div>";  */ }
+		else { 	die ("<div class='error'>An error occured saving your information, please try again later. ".mysql_error()."</div>"); }
+		
 	} // end selected user
-	//$i++;
-
 }
 
 $i=0;
@@ -157,15 +153,15 @@ foreach($_POST['juniorname'] as $name) {
 			$modified_junior = $name;
 		}
 		echo "<BR>$i ) $modified_junior (junior)";
-	$insert = mysql_query("insert into learntocurl(group_name, email, group_adults, group_juniors, confirmation, openhouse_id, learn_refer, reg_refer, user_refer, create_browser, create_ip) ".
-	"values('".htmlspecialchars($modified_junior)."', '', 0, 1, '".$confirmation_number."', '".$_POST['openhouseid']."','".$learn_refer."', '".$reg_refer."', '".$user_refer."', '".$_SERVER['HTTP_USER_AGENT']."', '".$_SERVER['REMOTE_ADDR']."' ) ", $db_conn);
-	if( $insert ) { /* echo "<div class='success'>Reservation is not gauranteed until payment is received!</div>";  */ }
-	else { 	die ("<div class='error'>An error occured saving your information, please try again later. ".mysql_error()."</div>"); }
-
+		$insert = mysql_query("insert into learntocurl(group_name, email, group_adults, group_juniors, confirmation, openhouse_id, learn_refer, reg_refer, user_refer, create_browser, create_ip) ".
+		"values('".htmlspecialchars($modified_junior)."', '', 0, 1, '".$confirmation_number."', '".$_POST['openhouseid']."','".$learn_refer."', '".$reg_refer."', '".$user_refer."', '".$_SERVER['HTTP_USER_AGENT']."', '".$_SERVER['REMOTE_ADDR']."' ) ", $db_conn);
+		if( $insert ) { /* echo "<div class='success'>Reservation is not gauranteed until payment is received!</div>";  */ }
+		else { 	die ("<div class='error'>An error occured saving your information, please try again later. ".mysql_error()."</div>"); }
+		
 	}
 	$i++;
 }
-
+echo "</div>";
 ?>
 </P>
 <br>
@@ -177,8 +173,8 @@ foreach($_POST['juniorname'] as $name) {
 // send email confirmation
 $to      = $_POST["email"][0];
 $subject = 'Learn to Curl Registration Pending';
-$headers = 'From: $email_from_admin' . "\r\n" .
-    'Reply-To: $email_from_admin';
+$headers = 'From: '.$EMAIL_FROM_ADMIN. "\r\n" .
+    'Reply-To: '.$EMAIL_FROM_ADMIN;
 
 $message = "Thank you for your registration. When payment is received, your spot is saved. \n\n".
 "Event: $openhouse[0] \n". // add event name
@@ -187,9 +183,9 @@ $message = "Thank you for your registration. When payment is received, your spot
 "Number of adults: ".$_POST['adults']." \n".
 "Number of juniors: ".$_POST['juniors']." \n".
 "Confirmation number: ".$confirmation_number." \n".
-"\n".
-"\n".
-"\n\n";
+"\n\n";  // removed link to continue payment.
+// "If you haven't paid you can resume your registration from this link (and check payment status): \n".
+// "http://www.evergreencurling.com/learn/openhouse/register.php?type=editopenhouse&confnumber=".$confirmation_number." \n";
 if( !mail($to, $subject, $message, $headers) ) {
 	// email didn't send, print message to screen
 	echo "<p>Email did not send, contents would have been:</p>";
@@ -336,7 +332,7 @@ function payWithPayPal($confirmation_number, $openhousedate) {
 <input type=hidden name=custom value="<?php echo $_POST["groupname"][0]; ?>">
 <input type=hidden name=invoice value="<?php echo $confirmation_number; ?>">
 
-Payment Due: <span class='userinput'><?php echo "$". calculatePrice($_POST["openhouseid"], $_POST["adults"], $_POST["juniors"], 1) ?></span>
+Payment Due: <span class='userinput'><?php echo "$". calculatePrice($_POST["openhouseid"], $_POST["adults"], $_POST["juniors"], 0) ?></span>
 <br><input type="hidden" name="cmd" value="_xclick">
 <input type="hidden" name="business" value="<?php echo $PAYPAL_BUSINESS; ?>">
 <input type="hidden" name="lc" value="US">
@@ -344,7 +340,7 @@ Payment Due: <span class='userinput'><?php echo "$". calculatePrice($_POST["open
 <input type="hidden" name="button_subtype" value="services">
 <input type="hidden" name="amount" value="<?php echo calculatePrice($_POST["openhouseid"], $_POST["adults"], $_POST["juniors"], 0); ?>">
 <input type="hidden" name="currency_code" value="USD">
-<input type="hidden" name="shipping" value="1.00">
+<input type="hidden" name="shipping" value="0">
 <input type="hidden" name="bn" value="PP-BuyNowBF:btn_paynowCC_LG.gif:NonHosted">
 <input type="image" src="https://www.paypal.com/en_US/i/btn/btn_paynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
 <img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">

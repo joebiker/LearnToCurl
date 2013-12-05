@@ -52,6 +52,26 @@ class Event
 		return $nicedate = date('D jS \of F Y g:i A', $this->datetime_stamp);	
 	}
 	
+	// Find out how many people are registered
+	public function registeredOpenhouseCount() {
+		if( strcmp($this->title, "none") == 0) 
+			$this->getEventDetails(); 
+		
+		$query = "select (select max_guests from openhouse_dates where ID = ".$this->id.") as MAX, (select sum(group_adults+group_juniors) from openhouse where OPENHOUSE_ID = ".$this->id." and PAID_DOLLARS > 0 or ATTENDED = 1) as PLAYERS";
+		$spaceavail = mysql_query($query);
+		if( !$spaceavail ) {
+			return -989; //error condition
+		}
+		$stringresult = mysql_result($spaceavail, 0, 0);
+		if( !$stringresult) {
+			return -987; //error condition
+		}
+		$max_guests = $stringresult;
+		$reg_players  = mysql_result($spaceavail, 0, 1)?mysql_result($spaceavail, 0, 1):0;
+		
+		return $reg_players;
+	}
+
 	public function getEventDetails() {
 	
 	// identify user

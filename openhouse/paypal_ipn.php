@@ -2,7 +2,6 @@
 
 function recordPayment() {
 	$filename = 'ipn_log.txt';
-	$email_from_admin = "joebiker@gmail.com";  // Email is sent from this persom -- treasurer or l2c admin
 	// This is where errors are sent
 	$toAdmin = "joebiker@gmail.com"; // seperate by commas if you want multiple emails
 	$handle = fopen($filename, 'a');
@@ -77,12 +76,12 @@ function recordPayment() {
 			
 			// cannot have duplicate Confromation numbers outside of a given registration.
 			$db_conn = connect_db($DB_SERVER, $DB_USER, $DB_PASS, $DB_NAME);	// from include
-/*			$query = "select sum(group_adults), sum(group_juniors) from learntocurl where confirmation = confirmation='".$lookup."' ";
+			$query = "select count(*) from learntocurl where confirmation='".$lookup."' ";
 			$result = mysql_query($query);
 			$attendance = mysql_fetch_array($result);
-			$total_attend = intval($attendance[0]) + intval($attendance[1]);
+			$total_attend = intval($attendance[0]);
 			$payment_per = intval($payment)/$total_attend;
-*/			$query = "update learntocurl set paid_type='paypal', paid_dollars=".$payment.", PAYPAL_TX_ID='".$_POST['txn_id']."', paid_date=now() where confirmation='".$lookup."' ";
+			$query = "update learntocurl set paid_type='paypal', paid_dollars=".$payment_per.", PAYPAL_TX_ID='".$_POST['txn_id']."', paid_date=now() where confirmation='".$lookup."' ";
 			$update = mysql_query($query, $db_conn);
 			if( $update ) {
 				fwrite($handle, "DATABASE record ".$lookup." UPDATED! \n");

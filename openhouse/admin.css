@@ -32,6 +32,15 @@ body
     font-size: 20pt;
   }
 
+.userinput
+{
+    color: white;
+    text-align: left;
+    font-family: sans-serif;
+    list-style-type: disc;
+    font-size: 20pt;
+}
+
 .comments
 {
     color: DarkRed;

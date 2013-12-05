@@ -81,10 +81,10 @@ function checkReg($id) {
 
 	</script>
 </head>
-
 <body>
+
 <div id="wrapper">
-<div id="content">
+<div id="main">
 
 <h1>Learn to Curl Registration</h1>
 <P>Registration and payment on the website guarantees a spot in the class. Walk-ins are welcomed, but there is no guarantee of getting a spot on the ice. 
