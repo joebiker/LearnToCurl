@@ -17,11 +17,9 @@
 <?php
 include '../common.php';
 include '../database.php';
+include "cEvent.php";
 
 $confirmation_number = "";
-$errorFullOpenHouse =	"Maximum amount of paid guests, payment cannot be accepted for this event.".
-						"You can showup in person, to see if a spot opens up on the day of any event.";
-
 
 if( isset($_POST['type']) && "newopenhouse" == $_POST['type'] ) { // continue with new registration
 	if($DEBUG) echo "Registration for: <I>". $_POST['type'] . "</I> <BR>";
@@ -105,17 +103,12 @@ if( isset($_POST['type']) && "newopenhouse" == $_POST['type'] ) { // continue wi
 	} // end normal registration
 	
 	// display registration 
-	$query = "select event_date, event_name, max_guests from learntocurl_dates where ID = ".$_POST["openhouseid"];
-	$result = mysql_query($query);
-	if(!$result) {
-		die("Error retrieving Learn to Curl details");
-	}
-	$openhouse = mysql_fetch_array($result);
+	$e = new Event($_REQUEST['openhouseid']);
+	$arr = $e->getEmails();
+	$nicedate = $e->getNiceDate();
 ?>
 Event: <span class='userinput'><?php 
-			$stamp = strtotime($openhouse[0]);
-			$nicedate = date('D jS \of F Y g:i A', $stamp);
-echo $nicedate ." - ". $openhouse[1]; ?> </span><BR>
+echo $e->getNiceDate() ." - ". $e->getName(); ?> </span><BR>
 Leader: <span class='userinput'><?php echo $_POST["groupname"][0]; ?> </span><BR>
 Email: <span class='userinput'><?php echo htmlspecialchars($_POST["email"][0]); ?> </span><BR>
 Number of adults: <span class='userinput'><?php echo htmlspecialchars($_POST["adults"]); ?> </span><BR>
@@ -125,7 +118,7 @@ Confirmation number: <span class='userinput'><?php echo $confirmation_number; ?>
 
 
 <P>
-<?php payWithPayPal($confirmation_number, $openhouse[0]);
+<?php payWithPayPal($confirmation_number, $e->getNiceDate());
 
 if($DEBUG)	echo "<div class=debug >";
 else 		echo "<div class=debug style='display:none;'>";
@@ -177,7 +170,7 @@ $headers = 'From: '.$EMAIL_FROM_ADMIN. "\r\n" .
     'Reply-To: '.$EMAIL_FROM_ADMIN;
 
 $message = "Thank you for your registration. When payment is received, your spot is saved. \n\n".
-"Event: $openhouse[0] \n". // add event name
+"Event: $e->getNiceDate() \n". // add event name
 "Leader: ".$_POST['groupname'][0]." \n".
 "Email: ".$_POST['email'][0]." \n".
 "Number of adults: ".$_POST['adults']." \n".
@@ -259,7 +252,7 @@ else if( isset($_REQUEST['type']) && "editopenhouse" == $_REQUEST['type'] &&
 
 Event: <span class='userinput'><?php 
 			$stamp = strtotime($reg_details[4]);
-			$nicedate = date('D jS \of F Y h:i:s A', $stamp);
+			$nicedate = date('l jS \of M g:i:s A', $stamp);
 echo $nicedate ." - ". $reg_details[5]; ?> </span><BR>
 Leader: <span class='userinput'><?php echo $reg_details[0]; ?> </span><BR>
 Number of adults: <span class='userinput'><?php echo $reg_details[2]; ?> </span><BR>
@@ -278,28 +271,30 @@ else {
 ?>
 </span><BR>
 
-action: 
 
-<span class='userinput'>
 
 <?php
 
 if ($reg_details[6] < 1) {
 
 	if ( availableOpenhouseCountNoError($reg_details[8]) <= 0 ) {
-		echo $errorFullOpenHouse;
+		echo "action: <span class='userinput'>$errorFullOpenHouse</span>";
 	}
 	else {
+		// allow the payWithPayPal function to get the proper details.
+		$_POST["groupname"][0] = $reg_details[0];
+		$_POST["adults"] = $reg_details[2];
+		$_POST["juniors"] = $reg_details[3];
+		$_POST["openhouseid"] = $reg_details[8];
 		payWithPayPal($confirmation_number, $reg_details[4]);
 		// Will display message with PayPal button
 	}
 }
 else {
-	echo "No further action required.";
+	echo "action: <span class='userinput'>No further action required.</span>";
 	////  ask to PRINT WAIVERS  //////
 }
 ?>
-</span><BR>
 
 
 <?php

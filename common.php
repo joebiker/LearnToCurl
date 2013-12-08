@@ -1,4 +1,5 @@
 <?php
+$errorFullOpenHouse = "Maximum amount of paid guests, payment cannot be accepted for this event. You can showup in person, to see if a spot opens up on the day of any event.";
 
 $DEBUG            = 0;
 $ERROR_MSG        = "";
@@ -13,6 +14,7 @@ $PAYPAL_SIGNATURE = "";
 $PAYPAL_CANCELURL = "";
 $PAYPAL_RETURN    = "";
 $PAYPAL_NOTIFY_URL= "";
+$REGISTER_URL     = "";
 $PAYPAL_AUTH_TX   = "";
 $PAYPAL_IPN_URL   = "";	// UNUSED.  Difficulties. something isn't right here. Just edit the file Sept-2009
 $PAYPAL_RCPT_URL  = "";	// ipn and receipt.  Not tested if receipt and ipn can be in sandbox at same time

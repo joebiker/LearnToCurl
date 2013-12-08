@@ -43,13 +43,13 @@ class Event
 	public function getNiceDate() {
 		if( strcmp($this->title, "none") == 0) 
 			$this->getEventDetails(); 
-		return $nicedate = date('D jS \of M g:i A', $this->datetime_stamp);	
+		return $nicedate = date('l jS \of F g:i A', $this->datetime_stamp);	
 	}
 	
 	public function getNiceShortDate() {
 		if( strcmp($this->title, "none") == 0) 
 			$this->getEventDetails(); 
-		return $nicedate = date('D jS \of F Y g:i A', $this->datetime_stamp);	
+		return $nicedate = date('D jS \of M g:i A', $this->datetime_stamp);	
 	}
 	
 	// Find out how many people are registered
