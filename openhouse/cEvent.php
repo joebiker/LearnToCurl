@@ -71,7 +71,21 @@ class Event
 		
 		return $reg_players;
 	}
-
+	
+	// Find out how many have attended, (regardless or payment)
+	public function attendedOpenhouseCount() {
+		if( strcmp($this->title, "none") == 0) 
+			$this->getEventDetails(); 
+		
+		$query = "select sum(group_adults+group_juniors) from learntocurl where OPENHOUSE_ID = ".$this->id." and ATTENDED = 1";
+		$spaceavail = mysql_query($query);
+		if( !$spaceavail ) {
+			return -989; //error condition
+		}
+		$stringresult = mysql_result($spaceavail, 0, 0);
+		return $stringresult;
+	}
+	
 	public function getEventDetails() {
 	
 	// identify user

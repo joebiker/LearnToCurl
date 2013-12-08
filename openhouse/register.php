@@ -170,7 +170,7 @@ $headers = 'From: '.$EMAIL_FROM_ADMIN. "\r\n" .
     'Reply-To: '.$EMAIL_FROM_ADMIN;
 
 $message = "Thank you for your registration. When payment is received, your spot is saved. \n\n".
-"Event: $e->getNiceDate() \n". // add event name
+"Event: ".$e->getNiceDate()." \n". // add event name
 "Leader: ".$_POST['groupname'][0]." \n".
 "Email: ".$_POST['email'][0]." \n".
 "Number of adults: ".$_POST['adults']." \n".
@@ -258,11 +258,8 @@ Leader: <span class='userinput'><?php echo $reg_details[0]; ?> </span><BR>
 Number of adults: <span class='userinput'><?php echo $reg_details[2]; ?> </span><BR>
 Number of juniors: <span class='userinput'><?php echo $reg_details[3]; ?> </span><BR>
 Confirmation number: <span class='userinput'><?php echo $confirmation_number; ?> </span><BR>
-Payment status: 
-<span class='userinput'>
-<?php
+Payment status: <span class='userinput'><?php
 if ($reg_details[6] < 1) {
-//	echo "<a href='javascript:void(0);' onclick='checkReg( ".$reg_details[8].");'>Not paid</a>";
 	echo "Not paid";
 }
 else {

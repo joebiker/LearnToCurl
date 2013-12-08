@@ -143,7 +143,7 @@ CLUB, their officers,
 officials, agents and/or employees, other
 participants, sponsoring agencies, sponsors, advertisers, and, if
 applicable, owners and lessors of premises used for the activity
-(?Releasees?), WITH RESPECT TO ANY AND ALL INJURY, DISABILITY, DEATH,
+(Releasees), WITH RESPECT TO ANY AND ALL INJURY, DISABILITY, DEATH,
 or loss or damage to person or property
 associated with my presence or participation, WHETHER ARISING FROM THE
 NEGLIGENCE OF THE RELEASEES OR OTHERWISE, to the fullest extent permitted by law.

@@ -26,6 +26,7 @@ $e = new Event($_POST['openhouseid']);  //	$e = new Event($_REQUEST['openhouseid
 
 $e->getEventDetails();
 
+echo "<div style='position:absolute; right:0px;z-index:-1;'>".$e->attendedOpenhouseCount()."</div>";
 echo "<H1>".$e." - ".$e->getNiceDate()."</h1>";
 
 
