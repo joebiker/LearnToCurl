@@ -3,12 +3,7 @@
 	<meta charset="utf-8">
 	<meta name="author" content="Joe Petsche" />
 	<meta name="DC.creator" content="Joe Petsche" />
-	<title>Please Sign In</title>
-	<link rel="SHORTCUT ICON" href="../favicon.ico">
 	<link href="../learntocurl.css" rel="stylesheet" type="text/css" />
-	<link href="http://www.hollywoodcurling.org/resources/theme/user.css?t=635163594440000000" rel="stylesheet" type="text/css" />
-	<link href="http://www.hollywoodcurling.org/BuiltTheme/nature_bliss/dd7aef2a/styles/theme.less" rel="stylesheet" type="text/css" />
-	<link href="http://www.hollywoodcurling.org/resources/theme/customStyles.css?t=635163591570000000" rel="stylesheet" type="text/css" />
 </head>
 <body>
 

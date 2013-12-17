@@ -35,7 +35,7 @@ $(function() {
 	});
 });
 
-function toggleCheck($conf, $field, $checkb, $msgspan) {
+function toggleCheck($gid, $field, $checkb, $msgspan) {
 	if($checkb.checked==true) {
 		$value = 'on';
 	} 
@@ -46,7 +46,7 @@ function toggleCheck($conf, $field, $checkb, $msgspan) {
 	var req = new Request.HTML({
 		method: 'get',
 		url: 'openhousecheck.php',
-		data: { 'confirmation_number' : $conf, 'field' : $field, 'value': $value },
+		data: { 'gid' : $gid, 'field' : $field, 'value': $value },
 		onRequest: function() { /* alert('Request made. Please wait...'); */ },
 		update: $msgspan,
 		onComplete: function(response) { /* alert('Request completed successfully.'); $('openspace').setStyle('background','#fffea1'); */
@@ -93,8 +93,9 @@ function editOpenHouse($var0,$var1,$var2,$var3,$var4,$var5,$var6,$var7,$var8) {
 if( isset($_POST['type']) && (strlen($_POST['type']) > 4) ) {
 	$db_conn = connect_db($DB_SERVER, $DB_USER, $DB_PASS, $DB_NAME);	// from include
 
+	$newcomments = preg_replace("/\r\n|\r|\n/", " <br>", trim($_POST['newcomments'])); // /\r\n|\r|\n/  or  /(\r?\n){2,}/
 	if( $_POST['type'] == "newopenhouse" ) {  // create new record
-		$result = mysql_query("insert into learntocurl_dates(event_date, event_name, max_guests, comments, event_type, price_adult, price_junior, price_disc) values('".$_POST['newdate']."', '".$_POST['newname']."', ".$_POST['newmax'].", '".$_POST['newcomments']."', upper('".$_POST['newtype']."'), '".$_POST['newpriceadult']."', '".$_POST['newpricejunior']."', '".$_POST['newpricedisc']."')");
+		$result = mysql_query("insert into learntocurl_dates(event_date, event_name, max_guests, comments, event_type, price_adult, price_junior, price_disc) values('".$_POST['newdate']."', '".$_POST['newname']."', ".$_POST['newmax'].", '".$newcomments."', upper('".$_POST['newtype']."'), '".$_POST['newpriceadult']."', '".$_POST['newpricejunior']."', '".$_POST['newpricedisc']."')");
 		if ($result) {
 			echo "<div class='success'>".$_POST['newdate']. " event created.</div>";
 		}
@@ -105,7 +106,7 @@ if( isset($_POST['type']) && (strlen($_POST['type']) > 4) ) {
 	else if ($_POST['type'] == "editopenhouse") {
 		// not able to update date.
 		// Consider allowing date change when no one has registered.
-		$query = "update learntocurl_dates set max_guests = ".$_POST['newmax'].", event_name = '".$_POST['newname']."', comments = '".$_POST['newcomments']."' where id = ".$_POST['id']." and event_date = '".$_POST['newdate']."' ";
+		$query = "update learntocurl_dates set max_guests = ".$_POST['newmax'].", event_name = '".$_POST['newname']."', comments = '".$newcomments."' where id = ".$_POST['id']." and event_date = '".$_POST['newdate']."' ";
 		$result = mysql_query($query);
 		$affect = mysql_affected_rows();
 		if ($result && $affect > 0) {
@@ -155,44 +156,6 @@ if( isset($_POST['type']) && (strlen($_POST['type']) > 4) ) {
 		
 		} // error checking end.
 	} // new guess end.
-	
-	else if( isset($_REQUEST['type']) && "modifyopenhouse" == $_REQUEST['type'] ) {  // edit user registration (from openhouseuseredit.php) -- duplicated with index.php allowing user to modify their registrations
-	
-	$confirmation_number = $_POST['confnumber'];
-	
-	include "openhouse_edit.php"; // does this do it all?
-	
-		$attended = 0;
-		$waiver   = 0;
-		
-		if( isset($_POST['attended']) )
-			$attended = $_POST['attended'];
-		if( isset($_POST['waiver']) )
-			$waiver = $_POST['waiver'];
-		
-		// additionally: paid dollars / attended / waiver
-		if ( strcmp($attended, "on") == 0 )
-			$attended = "1";
-		if ( strcmp($attended, "1") != 0 )
-			$attended = "0";	
-		if ( strcmp($waiver, "on") == 0 )
-			$waiver = "1";
-		if ( strcmp($waiver, "1") != 0 )
-			$waiver = "0";	
-			
-		/*echo*/ setFlag($confirmation_number, 'attended', $attended);
-		/*echo*/ setFlag($confirmation_number, 'waiver', $waiver);
-
-		
-		$query = "update learntocurl set paid_dollars='".$_POST['paiddollars']."', paid_type='".$_POST['paidtype']."' where confirmation = '".$confirmation_number."'";		
-		$update = mysql_query($query, $db_conn);
-		if( $update ) {
-		//	echo "<div class='success'>Your Modifications were recorded.</div>";
-		}
-		else {
-			die ("<div class='error'>An error occured saving your information, please try again later. ".mysql_error()."</div>");
-		}
-	}
 	else if( isset($_REQUEST['type']) && "deleteguest" == $_REQUEST['type'] ) {  // remove eronous users
 		
 		$confirmation_number = $_POST['confnumber'];
@@ -248,7 +211,7 @@ if($result && isset($_GET['view']) ) { //query was a success
 		echo "<table class='datatable'>";								// Build DATA ROWS PER-EACH OPEN HOUSE
 		echo "<TR><TH>&nbsp;<TH>Name<TH>Adults<TH>Jr.<TH>Paid Type<TH>Paid Dollars<TH>Attended<TH>Waiver<TH>Confirm<TH>Email<TH>How'd you hear?</TR>";
 		
-		$resultdata = mysql_query("select group_name, group_adults, group_juniors, email, paid_dollars, paid_type, confirmation, attended, waiver, user_refer, learn_refer, reg_refer from learntocurl, learntocurl_dates where id = openhouse_id AND id = $row[3] order by EVENT_DATE ASC, group_name", $db_conn);
+		$resultdata = mysql_query("select group_name, group_adults, group_juniors, email, paid_dollars, paid_type, confirmation, attended, waiver, user_refer, learn_refer, reg_refer, gid from learntocurl, learntocurl_dates where id = openhouse_id AND id = $row[3] order by EVENT_DATE ASC, group_name", $db_conn);
 		if($resultdata) { //query was a success
 			while ($rowdata = mysql_fetch_array($resultdata, MYSQL_BOTH)) {
 				echo '<form action="openhouseuseredit.php?conf='.$rowdata[6].'" method=post name="oh'.$row[3].'">';
@@ -263,8 +226,8 @@ if($result && isset($_GET['view']) ) { //query was a success
 			    echo "<td align=right>$rowdata[2] &nbsp;";
 			    echo "<td align=right>$rowdata[5] &nbsp;"; // type of payment
 			    echo "<td align=right>$rowdata[4] &nbsp;"; // dollars
-			    echo '<td align=center><input onClick="toggleCheck(\''.$rowdata[6].'\', \'attended\', this, \'openhouse'.$row[3].'\');" type="checkbox" '; if(strcmp($rowdata[7],"1")==0) echo ' checked="yes" '; echo '>';
-			    echo '<td align=center><input onClick="toggleCheck(\''.$rowdata[6].'\', \'waiver\',   this, \'openhouse'.$row[3].'\');" type="checkbox" '; if(strcmp($rowdata[8],"1")==0) echo ' checked="yes" '; echo '>';
+			    echo '<td align=center><input onClick="toggleCheck(\''.$rowdata[12].'\', \'attended\', this, \'openhouse'.$row[3].'\');" type="checkbox" '; if(strcmp($rowdata[7],"1")==0) echo ' checked="yes" '; echo '>';
+			    echo '<td align=center><input onClick="toggleCheck(\''.$rowdata[12].'\', \'waiver\',   this, \'openhouse'.$row[3].'\');" type="checkbox" '; if(strcmp($rowdata[8],"1")==0) echo ' checked="yes" '; echo '>';
 			    echo "<td>$rowdata[6]&nbsp;"; // confirm
 			    echo "<td>$rowdata[3]&nbsp;";
 			  /*echo "<td><select><option value=''>Not Paid</option>"

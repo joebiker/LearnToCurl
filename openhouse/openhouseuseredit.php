@@ -1,4 +1,7 @@
 <?php
+header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
+header('Pragma: no-cache'); // HTTP 1.0.
+header('Expires: 0'); // Proxies.
 
 session_name('Private');
 session_start();
@@ -17,13 +20,13 @@ include "../database.php";
 ?>
 <HTML>
 <HEAD>
-	<title>Learn to Curl Administration - Confirmation</title>
+	<title>Learn to Curl Administration - User</title>
 	<link href="../learntocurl.css" rel="stylesheet" type="text/css" />
 	<link href="admin.css" rel="stylesheet" type="text/css" />
 </HEAD>
 <body>
 
-<h1>Learn to Curl - Confirmation</h1>
+<h1>Learn to Curl - User</h1>
 <?php
 
 $callingpage = 'openhouseview.php';
@@ -41,13 +44,13 @@ if( isset($_REQUEST['openhouseid']))
 </div>
 
 
-<?php	
+<?php
 // based completely on CONF number. Consider using OpenhouseID and CONF Number jvp-June-2013	
-if( isset($_GET['conf']) && strlen($_GET['conf']) < 10) {
-	$conf = $_GET['conf'];
+if( isset($_GET['gid']) && strlen($_GET['gid']) < 10) {
+	$gid = $_GET['gid'];
 	
 	$db_conn = connect_db($DB_SERVER, $DB_USER, $DB_PASS, $DB_NAME);	// from include
-	$resultdata = mysql_query("select group_name, group_adults, group_juniors, email, paid_dollars, paid_type, confirmation, attended, waiver, id, user_refer, reg_refer, learn_refer from learntocurl, learntocurl_dates where id = openhouse_id AND confirmation='$conf' order by EVENT_DATE ASC, group_name", $db_conn);
+	$resultdata = mysql_query("select group_name, group_adults, group_juniors, email, paid_dollars, paid_type, confirmation, attended, waiver, id, user_refer, learn_refer, reg_refer, learntocurl.create_date, paid_date from learntocurl, learntocurl_dates where id = openhouse_id AND gid='$gid' order by EVENT_DATE ASC, group_name", $db_conn);
 	if($resultdata) { //query was a success
 
 		while ($rowdata = mysql_fetch_array($resultdata, MYSQL_BOTH)) {
@@ -55,33 +58,40 @@ if( isset($_GET['conf']) && strlen($_GET['conf']) < 10) {
 			if( strcmp($rowdata[5],"paypal") != 0 ) 
 				$delete = "x";
 				?>
-				
 				<form action="<?php echo $callingpage."?view=".$openhouseid; ?>" method=post>
-				<input type="hidden" name="type" value="modifyopenhouse">
-				
-				<table class='datatable'>
-				<TR><TH>&nbsp;<TH>Name<TH>Adults<TH>Juniors<TH>Email<TH>Confirmation<TH>Paid Dollars<TH>Paid Type<TH>Attended<TH>Waiver</TR>
-				
-				<tr><td><?=$delete?> &nbsp; <?php echo $delete;?>
-				<td><input type=text name="groupname" value="<?php echo $rowdata[0]; ?>"></td>
-				<td align=right><input type=text name="adults" value='<?php echo $rowdata[1]; ?>' size=2></td>
-				<td align=right><input type=text name="juniors" value='<?php echo $rowdata[2]; ?>' size=2></td>
-				<td><input type=text name="email" value='<?php echo $rowdata[3]; ?>'></td>
-				<td><?php echo $rowdata[6];?> <input type="hidden" name="confnumber" value="<?php echo $rowdata[6];?>">
-				<td align=right><input type=text name="paiddollars" value='<?php echo $rowdata[4]; ?>' size=3></td>
-				<?php
+				<input type="hidden" name="type" value="modifyuser">
+				<input type="hidden" name="gid" value="<?php echo $gid; ?>">
+				<table class='usertable'>
+				<TR><TH>Confirmation
+					<td title='<?php echo $gid; ?>'><?php echo $rowdata[6];?> <input type="hidden" name="confnumber" value="<?php echo $rowdata[6];?>">
+				<TR><TH>Name
+					<td><input type=text name="groupname" value="<?php echo $rowdata[0]; ?>"></td>
+				<TR><TH>Email
+					<td><input type=text size=40 name="email" value='<?php echo $rowdata[3]; ?>'></td>
+				<TR><TH>Adults
+					<td align=left><input type=text name="adults" value='<?php echo $rowdata[1]; ?>' size=2></td>
+				<TR><TH>Juniors
+					<td align=left><input type=text name="juniors" value='<?php echo $rowdata[2]; ?>' size=2></td>
+				<TR><TH>Paid Dollars
+					<td align=left><input type=text name="paiddollars" value='<?php echo $rowdata[4]; ?>' size=3></td>
+				<TR><TH>Paid Type
+					<?php
 			    echo "<td><select name='paidtype'><option value=''>Not Paid</option>"
 			        ."<option value='cash'";  if($rowdata[5]=="cash")  echo "selected"; echo ">Cash</option>"
+			        ."<option value='credit' "; if($rowdata[5]=="credit")  echo "selected"; echo ">Credit</option>"
 			        ."<option value='check' "; if($rowdata[5]=="check")  echo "selected"; echo ">Check</option>"
+			        ."<option value='promotion' "; if($rowdata[5]=="promotion") echo "selected"; echo ">Promotion</option>"
 			        ."<option value='paypal' "; if($rowdata[5]=="paypal") echo "selected"; echo ">PayPal</option>"
 			        ."<option value='free' "; if($rowdata[5]=="free") echo "selected"; echo ">Free</option>"
 			        ."</select></td>";
-			    echo '<td align=center><input type="checkbox" name="attended" '; if(strcmp($rowdata[7],"1")==0) echo ' checked="yes" '; echo '>';
-			    echo '<td align=center><input type="checkbox" name="waiver"   '; if(strcmp($rowdata[8],"1")==0) echo ' checked="yes" '; echo '></tr>';
+				echo "<TR><TH>Attended";
+					echo '<td> &nbsp; <input type="checkbox" name="attended" '; if(strcmp($rowdata[7],"1")==0) echo ' checked="yes" '; echo '>';
+				echo "<TR><TH>Waiver";
+					echo '<td> &nbsp; <input type="checkbox" name="waiver"   '; if(strcmp($rowdata[8],"1")==0) echo ' checked="yes" '; echo '></tr>';
 			    // allow move to another open house if not attended.
 
-			    echo "<TR><TD>&nbsp;<TD colspan=4>Move User to: ";
-				echo "<select name=openhouseid>";
+			    echo "<TR><TH>Move User to</TH>";
+				echo "<TD><select name=openhouseid>";
 				$result = mysql_query("select EVENT_NAME, EVENT_DATE, MAX_GUESTS, ID from learntocurl_dates order by EVENT_DATE DESC", $db_conn);
 				if($result) { //query was a success
 					while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
@@ -93,28 +103,37 @@ if( isset($_GET['conf']) && strlen($_GET['conf']) < 10) {
 				}
 				?>
 				</select>
-				<TD>How'd You Hear?
-				<TD colspan=4><?php echo $rowdata[10]; ?>&nbsp;</td></TR>
-				<tr><Td>&nbsp;</td><td>Reg refer</td><td colspan=8><?php echo $rowdata[11]; ?>&nbsp;</TR>
-				<tr><Td>&nbsp;</td><td>/Learn/ refer</td><td colspan=8><?php echo $rowdata[12]; ?>&nbsp;</TR>
-			    </table>
-			    <P>*If the above <i>refer</i> is blank, they probably typed the ECC address into their web browser.</P>
+			    <TR><TH></th><td><input class="addbutton"  type="submit" value="Save user record"></td></tr>
+			    <TR><TH> </th><td>&nbsp;</td></tr>
+			    
+				<TR><TH>How'd You Hear?
+				<TD><?php echo $rowdata[10]; ?></td></TR>
+				<tr><th title='If the referral is blank, they probably typed the address into their web browser.'>Home Page Referral</th>
+				<td><?php echo $rowdata[11]; ?>&nbsp;</TR>
+				<tr><th title='If the referral is blank, they probably typed the address into their web browser.'>Registration Referral</th>
+				<td><?php echo $rowdata[12]; ?>&nbsp;</TR>
+				<tr><th>Record Created On</th>
+				<td><?php echo $rowdata[13]; ?>&nbsp;</TR>
+				<tr><th>Payment On</th>
+				<td><?php echo $rowdata[14]; ?>&nbsp;</TR>
 		    
-		    <input class="addbutton"  type="submit" value="Save">
 		    </form>
-		    
-		    <?php 
-		    if( strcmp($delete, "x") != 0 ) 
-		    	echo "Cannot delete. Payment exists.<BR>";
-		    else {  ?>
-			<form action="<?php echo $callingpage; ?>" method="post" name="delete">
-		    <input type=hidden name="type" value="deleteguest">
-		    <input type=hidden name="confnumber" value="<?php echo $rowdata[6];?>">
-		    <input type=hidden name="view" value="<?php echo $rowdata[9];?>">
 			
-			<input class="savebutton" onClick="if(confirm('Are you sure you want to delete this user?\nConfirmation: <?php echo $rowdata[6];?>'))return true; else return false;" type=submit value="Delete">
-		    </form>
-		    <?php } ?>
+				<tr><th> </th>
+				<td><?php 
+				if( strcmp($delete, "x") != 0 ) 
+				echo "<P class='savebutton'>Cannot delete. Payment exists.</P><BR>";
+				else {  ?>
+				<form action="<?php echo $callingpage; ?>" method="post" name="delete">
+				<input type=hidden name="type" value="deleteguest">
+				<input type=hidden name="confnumber" value="<?php echo $rowdata[6];?>">
+				<input type=hidden name="view" value="<?php echo $rowdata[9];?>">
+				
+				<input class="savebutton" onClick="if(confirm('Are you sure you want to delete this user?\nConfirmation: <?php echo $rowdata[6];?>'))return true; else return false;" type=submit value="Delete user record">
+				</form>
+				<?php } ?>
+				</td></tr>
+			</table>
 		     
 		    <a href="<?php echo $callingpage.'?view='.$openhouseid; ?>"><< Back</a> 
 		    

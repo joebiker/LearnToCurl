@@ -1,7 +1,7 @@
 <?php
 include '../common.php';
 include '../database.php';
-include 'cEvent.php';
+include 'learntocurl.php'; // should convert to cEvent.php
 
 if( isset($_GET['id']) && (strlen($_GET['id']) < 10) ) { // no sql injection please
 // Display a text message about the registration for the given ID
@@ -29,7 +29,7 @@ if( isset($_GET['id']) && (strlen($_GET['id']) < 10) ) { // no sql injection ple
 		}
 	}
 
-} else if (isset($_GET['confirmation_number']) && (strlen($_GET['confirmation_number']) == 5) ) { // no sql injection please
+} else if (isset($_GET['gid']) && (strlen($_GET['gid']) < 10) ) { // no sql injection please
 	$db_conn = connect_db($DB_SERVER, $DB_USER, $DB_PASS, $DB_NAME);	// from include
 // get attended or waiver flag
 // get on or off flag
@@ -41,7 +41,7 @@ if( isset($_GET['id']) && (strlen($_GET['id']) < 10) ) { // no sql injection ple
 		if ( strcmp($_GET['value'], "1") != 0 )
 			$_GET['value'] = "0";	
 			
-		echo setFlag($_GET['confirmation_number'], $_GET['field'], $_GET['value']);
+		echo setFlag($_GET['gid'], $_GET['field'], $_GET['value']);
 	}
 	else 
 		echo "Error 1";

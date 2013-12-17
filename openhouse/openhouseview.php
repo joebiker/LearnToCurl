@@ -4,8 +4,8 @@ session_name('Private');
 session_start();
 
 include '../common.php';
-include "../database.php";
-include "cEvent.php";
+include '../database.php';
+include 'cEvent.php';
 
 // AUTH //
 	$a = new Auth();
@@ -23,7 +23,7 @@ include "cEvent.php";
 	<link href="admin.css" rel="stylesheet" type="text/css" />
 	<script src="//ajax.googleapis.com/ajax/libs/mootools/1.4.5/mootools-yui-compressed.js"></script>
 	<script type="text/javascript" language="Javascript">
-function toggleCheck($conf, $field, $checkb, $msgspan) {
+function toggleCheck($gid, $field, $checkb, $msgspan) {
 	//make the ajax call, replace text
 	if($checkb.checked==true) {
 		$value = 'on';
@@ -35,7 +35,7 @@ function toggleCheck($conf, $field, $checkb, $msgspan) {
 	var req = new Request.HTML({
 		method: 'get',
 		url: 'openhousecheck.php',
-		data: { 'confirmation_number' : $conf, 'field' : $field, 'value': $value },
+		data: { 'gid' : $gid, 'field' : $field, 'value': $value },
 		onRequest: function() { /* alert('Request made. Please wait...'); */ },
 		update: $msgspan,
 		onComplete: function(response) { /* alert('Request completed successfully.'); $('openspace').setStyle('background','#fffea1'); */
@@ -155,12 +155,27 @@ if( isset($_POST['type']) && (strlen($_POST['type']) > 4) ) {
 		} // error checking end.
 	} // new guess end.
 	
-	else if( isset($_REQUEST['type']) && "modifyopenhouse" == $_REQUEST['type'] ) {  // edit user registration (from openhouseuseredit.php) -- duplicated with index.php allowing user to modify their registrations
+	else if( isset($_REQUEST['type']) && "modifyuser" == $_REQUEST['type'] ) {  // edit user registration (from openhouseuseredit.php) -- duplicated with index.php allowing user to modify their registrations
+		$confirmation_number =  $_POST['confnumber'];
+		$gid = $_POST['gid'];
+		//echo "<div class='success'>Your Modifications are able to be updated. ".$gid. $_POST['groupname']."</div>";
+		
+		//include "openhouse_edit.php";
+		// UPDATE sql 
+		$db_conn = connect_db($DB_SERVER, $DB_USER, $DB_PASS, $DB_NAME);	// from include
 	
-	$confirmation_number = $_POST['confnumber'];
-	
-	include "openhouse_edit.php";
-	
+		$query = "update learntocurl set group_name='".$_POST['groupname']."', email='".$_POST['email']."', group_adults=".$_POST['adults'].", group_juniors=".$_POST['juniors'].", openhouse_id=".$_POST['openhouseid'].", paid_dollars='".$_POST['paiddollars']."', paid_type='".$_POST['paidtype']."', edit_count=edit_count+1, edit_ip='".$_SERVER['REMOTE_ADDR']."', edit_date=now() where gid='".$gid."'";
+		// update learntocurl set group_name='Joe Mod', email='joebiker@gmail.com', group_size=1, openhouse_id=1, edit_count=edit_count+1, edit_ip='127.1.1.1' where confirmation = 'JOCL1'
+		
+		// needs paid dollars / attended / waiver
+		$update = mysql_query($query, $db_conn);
+		if( $update ) {
+			echo "<div class='success'>Your Modifications were recorded.</div>";
+		}
+		else {
+			die ("<div class='error'>An error occured saving your information, please try again later. ".mysql_error()."</div>");
+		}
+
 		$attended = 0;
 		$waiver   = 0;
 		
@@ -179,18 +194,9 @@ if( isset($_POST['type']) && (strlen($_POST['type']) > 4) ) {
 		if ( strcmp($waiver, "1") != 0 )
 			$waiver = "0";	
 			
-		/*echo*/ setFlag($confirmation_number, 'attended', $attended);
-		/*echo*/ setFlag($confirmation_number, 'waiver', $waiver);
+		/*echo*/ setFlag($gid, 'attended', $attended);
+		/*echo*/ setFlag($gid, 'waiver', $waiver);
 
-		
-		$query = "update learntocurl set paid_dollars='".$_POST['paiddollars']."', paid_type='".$_POST['paidtype']."' where confirmation = '".$confirmation_number."'";		
-		$update = mysql_query($query, $db_conn);
-		if( $update ) {
-		//	echo "<div class='success'>Your Modifications were recorded.</div>";
-		}
-		else {
-			die ("<div class='error'>An error occured saving your information, please try again later. ".mysql_error()."</div>");
-		}
 	}
 	else if( isset($_REQUEST['type']) && "deleteguest" == $_REQUEST['type'] ) {  // remove eronous users
 		
@@ -260,16 +266,16 @@ if($result && isset($_REQUEST['view']) ) { //query was a success
 		echo '<table class="headertable">'; 								// Build HEADERS FOR ALL OPEN HOUSES
 	    echo '<tr><TH class="headertable">'. $row[0] .'&nbsp;';
 	    echo "<TH class=headertable>".date('g:i A - l F j, Y',$phpdate) ."&nbsp;"
-	    ."<TH class=headertable>".strval(registeredOpenhouseCount($row[3]))." / $row[2] registered  (". attendedOpenhouseCountError($row[3], 0) ." attended)</th>"
+	    ."<TH class=headertable>".strval($event->registeredOpenhouseCount())." / $row[2] registered  (". $event->attendedOpenhouseCount() ." attended)</th>"
 		."</TR>";
 	    //	    ."<TH class=headertable>Limit $row[2] &nbsp;</TR>";
 	    echo "<TR><TD colspan='3' class=headertable>"; //<div id='myPanel$row[3]'>&nbsp;";  // IE6 needs the &nbsp;
 		
 		echo "\n<div class='comments'>$row[4]</div>";
 		echo "\n<table class='datatable'>";								// Build DATA ROWS PER-EACH OPEN HOUSE
-		echo "\n<TR><TH>View Details<TH>Name<TH>Adults<TH>Jr.<TH>Paid Type<TH>Paid Dollars<TH>Attended<TH>Waiver</TR>";
+		echo "\n<TR><TH>Conf#<TH>Name<TH>Adults<TH>Jr.<TH>Paid Type<TH>Paid Dollars<TH>Attended<TH>Waiver</TR>";
 		
-		$resultdata = mysql_query("select group_name, group_adults, group_juniors, email, paid_dollars, paid_type, confirmation, attended, waiver, user_refer, learn_refer, reg_refer from learntocurl, learntocurl_dates where id = openhouse_id AND id = $row[3] order by EVENT_DATE ASC, attended desc, waiver desc, confirmation, group_adults desc, group_name", $db_conn);
+		$resultdata = mysql_query("select group_name, group_adults, group_juniors, email, paid_dollars, paid_type, confirmation, attended, waiver, user_refer, learn_refer, reg_refer, gid from learntocurl, learntocurl_dates where id = openhouse_id AND id = $row[3] order by EVENT_DATE ASC, attended desc, waiver desc, confirmation, group_adults desc, group_name", $db_conn);
 		if($resultdata) { //query was a success
 			while ($rowdata = mysql_fetch_array($resultdata, MYSQL_BOTH)) {
 				echo '<form action="openhouseuseredit.php?conf='.$rowdata[6].'" method=post name="oh'.$row[3].'">';
@@ -280,14 +286,16 @@ if($result && isset($_REQUEST['view']) ) { //query was a success
 				// remove BUTTOM for replacement of text confirm number JVP-Jun-2013
 				// echo "<input class='editbutton' type=submit value='view' name='$rowdata[6]'>";
 			    echo "</form> ";
-			    echo "<a href='openhouseuseredit.php?conf=$rowdata[6]&openhouseid=$row[3]'>$rowdata[6]</a>";
-			    echo "<td>$rowdata[0]"; // name
+			    echo "$rowdata[6]</td>\n";
+//			    echo "<a href='openhouseuseredit.php?conf=$rowdata[6]&openhouseid=$row[3]'>$rowdata[6]</a></td>\n";
+			    echo "<td><a href='openhouseuseredit.php?gid=$rowdata[12]&openhouseid=$row[3]'>$rowdata[0]</a>"; // name
+//			    echo "<td>$rowdata[0]"; // name
 			    echo "<td align=right>$rowdata[1] &nbsp;";
 			    echo "<td align=right>$rowdata[2] &nbsp;";
 			    echo "<td align=right>$rowdata[5] &nbsp;"; // type of payment
 			    echo "<td align=right>$rowdata[4] &nbsp;"; // dollars
-			    echo '<td align=center><input onClick="toggleCheck(\''.$rowdata[6].'\', \'attended\', this, \'openhouse'.$row[3].'\');" type="checkbox" '; if(strcmp($rowdata[7],"1")==0) echo ' checked="yes" '; echo '>';
-			    echo '<td align=center><input onClick="toggleCheck(\''.$rowdata[6].'\', \'waiver\',   this, \'openhouse'.$row[3].'\');" type="checkbox" '; if(strcmp($rowdata[8],"1")==0) echo ' checked="yes" '; echo '>';
+			    echo '<td align=center><input onClick="toggleCheck(\''.$rowdata[12].'\', \'attended\', this, \'openhouse'.$row[3].'\');" type="checkbox" '; if(strcmp($rowdata[7],"1")==0) echo ' checked="yes" '; echo '>';
+			    echo '<td align=center><input onClick="toggleCheck(\''.$rowdata[12].'\', \'waiver\',   this, \'openhouse'.$row[3].'\');" type="checkbox" '; if(strcmp($rowdata[8],"1")==0) echo ' checked="yes" '; echo '>';
 			    //echo "<td>$rowdata[6]&nbsp;"; // confirm
 			    //echo "<td>$rowdata[3]&nbsp;"; // email
 			    //echo '<td style="overflow: hidden;" title="'.$rowdata[10].'">'.$rowdata[9].'&nbsp;</tr>'; // Howd you hear?
