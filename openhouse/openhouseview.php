@@ -6,6 +6,7 @@ session_start();
 include '../common.php';
 include '../database.php';
 include 'cEvent.php';
+include 'learntocurl.php'; // only for setFlag()
 
 // AUTH //
 	$a = new Auth();
@@ -273,7 +274,7 @@ if($result && isset($_REQUEST['view']) ) { //query was a success
 		
 		echo "\n<div class='comments'>$row[4]</div>";
 		echo "\n<table class='datatable'>";								// Build DATA ROWS PER-EACH OPEN HOUSE
-		echo "\n<TR><TH>Conf#<TH>Name<TH>Adults<TH>Jr.<TH>Paid Type<TH>Paid Dollars<TH>Attended<TH>Waiver</TR>";
+		echo "\n<TR><TH>Conf#<TH>Name<TH>Adults<TH>Jr.<TH>Paid Type<TH>Paid Dollars<TH>Attend<TH>Waiver</TR>";
 		
 		$resultdata = mysql_query("select group_name, group_adults, group_juniors, email, paid_dollars, paid_type, confirmation, attended, waiver, user_refer, learn_refer, reg_refer, gid from learntocurl, learntocurl_dates where id = openhouse_id AND id = $row[3] order by EVENT_DATE ASC, attended desc, waiver desc, confirmation, group_adults desc, group_name", $db_conn);
 		if($resultdata) { //query was a success
