@@ -1,9 +1,14 @@
+HTML > BODY
+{
+    background: url("none");
+    background-color: #BBC3B9;
+}
+
 body 
 {
     margin-top: 0px;
     font-family: Arial;
     color: Black;
-    background-color: #BBC3B9;
 }
 
 #report_list li {

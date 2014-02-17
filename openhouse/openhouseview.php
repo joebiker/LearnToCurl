@@ -6,7 +6,6 @@ session_start();
 include '../common.php';
 include '../database.php';
 include 'cEvent.php';
-include 'learntocurl.php'; // only for setFlag()
 
 // AUTH //
 	$a = new Auth();
@@ -165,7 +164,7 @@ if( isset($_POST['type']) && (strlen($_POST['type']) > 4) ) {
 		// UPDATE sql 
 		$db_conn = connect_db($DB_SERVER, $DB_USER, $DB_PASS, $DB_NAME);	// from include
 	
-		$query = "update learntocurl set group_name='".$_POST['groupname']."', email='".$_POST['email']."', group_adults=".$_POST['adults'].", group_juniors=".$_POST['juniors'].", openhouse_id=".$_POST['openhouseid'].", paid_dollars='".$_POST['paiddollars']."', paid_type='".$_POST['paidtype']."', edit_count=edit_count+1, edit_ip='".$_SERVER['REMOTE_ADDR']."', edit_date=now() where gid='".$gid."'";
+		$query = "update learntocurl set group_name='".$_POST['groupname']."', email='".$_POST['email']."', group_adults=".$_POST['adults'].", group_juniors=".$_POST['juniors'].", openhouse_id=".$_POST['openhouseid'].", paid_dollars='".$_POST['paiddollars']."', paid_type='".$_POST['paidtype']."', USER_REFER='".$_POST['referral']."', edit_count=edit_count+1, edit_ip='".$_SERVER['REMOTE_ADDR']."', edit_date=now() where gid='".$gid."'";
 		// update learntocurl set group_name='Joe Mod', email='joebiker@gmail.com', group_size=1, openhouse_id=1, edit_count=edit_count+1, edit_ip='127.1.1.1' where confirmation = 'JOCL1'
 		
 		// needs paid dollars / attended / waiver
@@ -202,36 +201,37 @@ if( isset($_POST['type']) && (strlen($_POST['type']) > 4) ) {
 	else if( isset($_REQUEST['type']) && "deleteguest" == $_REQUEST['type'] ) {  // remove eronous users
 		
 		$confirmation_number = $_POST['confnumber'];
-		$query = "delete from learntocurl where confirmation = '".$confirmation_number."'";
+		$gid = $_POST['gid'];
+		
+		$query = "delete from learntocurl where gid = '".$gid."'";
 		$update = mysql_query($query, $db_conn);
 		if( $update ) {
-			echo "<div class='success'>Successfully removed $confirmation_number.</div>";
+			echo "<div class='success'>Successfully removed <span title='$gid'>user</span> from Confirmation: $confirmation_number.</div>";
 		}
 		else {
-			die ("<div class='error'>An error occured removing $confirmation_number, please try again later. ".mysql_error()."</div>");
+			die ("<div class='error'>An error occured removing user <span title='$gid'>user</span> from Confirmation: $confirmation_number, please try again later. ".mysql_error()."</div>");
 		}
 	}
 }
 
 ?>
 
+<?php 
+$openhouseid = 0;
+if ( isset($_REQUEST['openhouseid']) )
+	$openhouseid = $_REQUEST['openhouseid'];
+if ( isset($_REQUEST['view']) )
+	$openhouseid = $_REQUEST['view'];
+?>
 <div id="logo" style="position:absolute; left: 10; top: 2px; color: green; ">
-	<A href="openhouseadmin.php"><< Back</a>
+	<A href="openhouseadmin.php"><< Back</a><BR>
+	<a href="openhouseview.php?view=<?php echo $openhouseid; ?>">Refresh</A>
 </div>
 
 <div id="report_list" style="position:absolute; right: 10; top: 0px; color: green; z-index: 1;">
 	<form name="refresh" ACTION="openhouseemailreport.php" method="POST" >
 	<input type="hidden" value="Email Report">
 	</form>
-	
-	<?php 
-	$openhouseid = 0;
-	if ( isset($_REQUEST['openhouseid']) )
-		$openhouseid = $_REQUEST['openhouseid'];
-	if ( isset($_REQUEST['view']) )
-		$openhouseid = $_REQUEST['view'];
-	?>
-	
 	<ul>
 	<li><a href="openhouseemailreport.php<?php if($openhouseid > 0 ) echo "?openhouseid=".$openhouseid;  ?>">Email Report</a>
 	<li><a href="openhousereferralreport.php">Referral Report</a>
@@ -274,9 +274,12 @@ if($result && isset($_REQUEST['view']) ) { //query was a success
 		
 		echo "\n<div class='comments'>$row[4]</div>";
 		echo "\n<table class='datatable'>";								// Build DATA ROWS PER-EACH OPEN HOUSE
-		echo "\n<TR><TH>Conf#<TH>Name<TH>Adults<TH>Jr.<TH>Paid Type<TH>Paid Dollars<TH>Attend<TH>Waiver</TR>";
+		echo "\n<TR><TH>Conf#<TH>Name<TH>Adult<TH>Jr<TH>Paid Type<TH>Paid$<TH>Attend<TH>Waiver</TH></TR>";
 		
-		$resultdata = mysql_query("select group_name, group_adults, group_juniors, email, paid_dollars, paid_type, confirmation, attended, waiver, user_refer, learn_refer, reg_refer, gid from learntocurl, learntocurl_dates where id = openhouse_id AND id = $row[3] order by EVENT_DATE ASC, attended desc, waiver desc, confirmation, group_adults desc, group_name", $db_conn);
+		// LIST OF GUESTS FOR GIVEN EVENT
+		// sort "attended" guests at bottom (easier to see folks who haven't shown up near the top)
+
+		$resultdata = mysql_query("select group_name, group_adults, group_juniors, email, paid_dollars, coalesce(paid_type,'') paid_type, confirmation, coalesce(attended,0) attended, coalesce(waiver,0) waiver, user_refer, learn_refer, reg_refer, gid from learntocurl, learntocurl_dates where id = openhouse_id AND id = $row[3] order by EVENT_DATE ASC, attended asc, waiver asc, paid_type desc, confirmation, group_adults desc, group_name", $db_conn);
 		if($resultdata) { //query was a success
 			while ($rowdata = mysql_fetch_array($resultdata, MYSQL_BOTH)) {
 				echo '<form action="openhouseuseredit.php?conf='.$rowdata[6].'" method=post name="oh'.$row[3].'">';
@@ -359,7 +362,10 @@ Search by <b>confirmation number</b> or <b>group name</b>. <i>NOTE: The first oc
 <input type=submit value='Search'><font size="-1"> &nbsp;&nbsp; Wildcard: %</font></form>
 </div>
 
-<P><A href="openhouseadmin.php"><< Back</a></P>
+<P>
+	<a href="openhouseview.php?view=<?php echo $openhouseid; ?>">Refresh</A><BR>
+	<A href="openhouseadmin.php"><< Back</a>
+</P>
 
 
 </body></html>

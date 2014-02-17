@@ -3,6 +3,8 @@
 	<meta charset="utf-8">
 	<meta name="author" content="Joe Petsche" />
 	<meta name="DC.creator" content="Joe Petsche" />
+	<title>Please Sign In</title>
+	<link rel="SHORTCUT ICON" href="/favicon.ico">
 	<link href="../learntocurl.css" rel="stylesheet" type="text/css" />
 </head>
 <body>

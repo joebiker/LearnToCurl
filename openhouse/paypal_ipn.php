@@ -95,15 +95,15 @@ function recordPayment() {
 			if( $result ) {
 				// ------------------ Send Email  -------------------- //
 				$to      = mysql_result($result, 0, 1);
-				$subject = 'Learn to Curl confirmation number';
+				$subject = $CLUB_NAME.' - Event Confirmation';
 				$headers = 'From: '.$EMAIL_FROM_ADMIN. "\r\n" .
 				    'Reply-To: '.$EMAIL_FROM_ADMIN. "\r\n" . // If you want different address
 				    'X-Mailer: PHP/' . phpversion();
 				
-				// http://www.evergreencurling.com/learn/openhouse/register.php?type=editopenhouse&confnumber=CXNG3
+				// /learn/openhouse/register.php?type=editopenhouse&confnumber=CXNG3
 				$webconfirm = $REGISTER_URL."?type=editopenhouse&confnumber=".$lookup;
 				// The message
-				$message = "Thank you, " . mysql_result($result, 0, 0) . ", \n\nYour payment has been received: $".$payment."\n\nYour confirmation number is: ".$lookup.".\n".$webconfirm."\n\n\n";  // additional messages can be written here in the final confirmation message.
+				$message = "Thank you, " . mysql_result($result, 0, 0) . ", \n\nYour payment has been received: $".$payment."\n\nYour confirmation number is: ".$lookup.".\n".$webconfirm."\n\n".$EMAIL_RCPT_TEXT;
 				
 				// In case any of our lines are larger than 70 characters, we should use wordwrap()
 				$message = wordwrap($message, 70);

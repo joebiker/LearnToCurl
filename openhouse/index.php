@@ -7,6 +7,7 @@ setcookie("reg_referral", getenv("HTTP_REFERER"));
 	<meta name="author" content="Joe Petsche" />
 	<meta name="DC.creator" content="Joe Petsche" />
 	<title>Learn to Curl Registration</title>
+	<link rel="SHORTCUT ICON" href="/favicon.ico">
 	<link href="../learntocurl.css" rel="stylesheet" type="text/css" />
 	<script src="//ajax.googleapis.com/ajax/libs/mootools/1.4.5/mootools-yui-compressed.js"></script>
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
@@ -148,8 +149,8 @@ if( isset($_REQUEST['type']) && "editopenhouse" == $_REQUEST['type'] ) {  // edi
 }
 ?>
 
-<fieldset>
-<legend>
+<fieldset class="registration">
+<legend class="registration">
 	<img class="icon" width="16" height="16" alt="" src="../stone.ico"/>
 	<strong>Registration</strong>
 </legend> 
@@ -158,8 +159,8 @@ if( isset($_REQUEST['type']) && "editopenhouse" == $_REQUEST['type'] ) {  // edi
 <TD>Requested Event 
 <TD><select name="openhouseid" id="openhouseid" onchange="checkReg(this.value);">
 <?php
-	// TODO: Create built in function to print <select> and eliminate open houses that are currently full.
-	$events_result = mysql_query("select ID, EVENT_DATE, EVENT_NAME from learntocurl_dates where EVENT_DATE >= current_date() and EVENT_TYPE='L' order by EVENT_DATE ASC", $db_conn);
+
+	$events_result = mysql_query("select ID, EVENT_DATE, EVENT_NAME from learntocurl_dates where EVENT_DATE >= current_date() and EVENT_TYPE in ('L', 'P') order by EVENT_DATE ASC", $db_conn);
 	if($events_result) { //query was a success
 		while ($row = mysql_fetch_array($events_result, MYSQL_BOTH)) {
 			if( $modify_event_id == $row[0] ) $selected = "selected"; else $selected = "";
@@ -234,7 +235,7 @@ if( isset($_REQUEST['type']) && "editopenhouse" == $_REQUEST['type'] ) {  // edi
 <option <?php if($modify_juniors == 4) echo "selected"; ?>>4</option>
 </select> <td></TR>
 <TR>
-<TD colspan=3><textarea cols="80" rows="5" readonly="readonly" style="font-size: 10px;">
+<TD colspan=3><textarea cols="107" rows="8" readonly="readonly" style="font-size: 10px;">
 <?php
 $waiver = "waiver_content.txt";
 if (file_exists($waiver)) {
@@ -265,8 +266,8 @@ echo "<TR><TD>Confirmation Number: <TD><input type='txt' readonly name='confnumb
 <TR><TD colspan=3>
 How did you hear about our Learn to Curl Event? <input type=text name="user_refer" maxlength=255>
 </TR>
-<TR><TD colspan=3>
-<input type="image" src="https://www.paypal.com/en_US/i/btn/btn_paynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+<TR><TD colspan=3 style="vertical-align: middle;">
+<span id="priceinfo"></span> <input type="image" src="https://www.paypal.com/en_US/i/btn/btn_paynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
 <!-- input type="submit" value="Go to PayPal to pay" -->
 </TR>
 </TABLE>
@@ -294,19 +295,30 @@ echo '<input type=hidden name="reg_refer" value="'.$reg_referral.'">';
 <script>
 $("#openhouseid").change(function() {
 	var data = $(this).val();
-	//alert (data);
+	var num_adults = $("#adults").val();
+	var num_juniors = $("#juniors").val();
+
 	var requestname = $.ajax({  
 		type: "GET",  
-		url: "openhousecheck.php", 
+		url: "openhouseinfo.php", 
 		data: { id: data, name: 1 }
 	});
 	requestname.done(function(msg) {  
 		//alert (msg);
 		$("#eventname").html( msg );});
 
+	var requestprice = $.ajax({  
+		type: "GET",  
+		url: "openhouseinfo.php", 
+		data: { id: data, adults: num_adults, juniors: num_juniors }
+	});
+	requestprice.done(function(msg) {  
+		//alert (msg);
+		$("#priceinfo").html( "$"+msg );});
+
 	var requestspace = $.ajax({  
 		type: "GET",  
-		url: "openhousecheck.php", 
+		url: "openhouseinfo.php", 
 		data: { id: data }
 	});
 	requestspace.done(function(msg) {  
@@ -314,10 +326,45 @@ $("#openhouseid").change(function() {
 		$("#openspace").html( msg );});
 	
 }).trigger('change');
+
+$("#adults").change(function() {
+	//alert (data);
+	var data = $("#openhouseid").val();
+	var num_adults = $("#adults").val();
+	var num_juniors = $("#juniors").val();
+	//alert ($("#adults").val());
+
+	var requestprice2 = $.ajax({  
+		type: "GET",  
+		url: "openhouseinfo.php", 
+		data: { id: data, adults: num_adults, juniors: num_juniors }
+	});
+	requestprice2.done(function(msg) {  
+		//alert (msg);
+		$("#priceinfo").html( "$"+msg );});
+	
+}).trigger('change');
+
+$("#juniors").change(function() {
+	//alert (data);
+	var data = $("#openhouseid").val();
+	var num_adults = $("#adults").val();
+	var num_juniors = $("#juniors").val();
+	//alert ($("#adults").val());
+
+	var requestprice2 = $.ajax({  
+		type: "GET",  
+		url: "openhouseinfo.php", 
+		data: { id: data, adults: num_adults, juniors: num_juniors }
+	});
+	requestprice2.done(function(msg) {  
+		//alert (msg);
+		$("#priceinfo").html( "$"+msg );});
+	
+}).trigger('change');
 </script>
 </form>
 
-<hr>
 <!-- P> 
 We are no longer allowing modifications:
 

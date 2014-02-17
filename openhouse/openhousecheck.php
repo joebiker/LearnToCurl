@@ -1,7 +1,7 @@
 <?php
 include '../common.php';
 include '../database.php';
-include 'learntocurl.php'; // should convert to cEvent.php
+include 'cEvent.php';
 
 if( isset($_GET['id']) && (strlen($_GET['id']) < 10) ) { // no sql injection please
 // Display a text message about the registration for the given ID

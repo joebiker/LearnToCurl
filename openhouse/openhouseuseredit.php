@@ -103,11 +103,11 @@ if( isset($_GET['gid']) && strlen($_GET['gid']) < 10) {
 				}
 				?>
 				</select>
+				<TR><TH>How'd You Hear?
+				<TD><input type=text name=referral size=40 value="<?php echo $rowdata[10]; ?>"></td></TR>
 			    <TR><TH></th><td><input class="addbutton"  type="submit" value="Save user record"></td></tr>
 			    <TR><TH> </th><td>&nbsp;</td></tr>
 			    
-				<TR><TH>How'd You Hear?
-				<TD><?php echo $rowdata[10]; ?></td></TR>
 				<tr><th title='If the referral is blank, they probably typed the address into their web browser.'>Home Page Referral</th>
 				<td><?php echo $rowdata[11]; ?>&nbsp;</TR>
 				<tr><th title='If the referral is blank, they probably typed the address into their web browser.'>Registration Referral</th>
@@ -126,6 +126,7 @@ if( isset($_GET['gid']) && strlen($_GET['gid']) < 10) {
 				else {  ?>
 				<form action="<?php echo $callingpage; ?>" method="post" name="delete">
 				<input type=hidden name="type" value="deleteguest">
+				<input type=hidden name="gid" value="<?php echo $gid;?>">
 				<input type=hidden name="confnumber" value="<?php echo $rowdata[6];?>">
 				<input type=hidden name="view" value="<?php echo $rowdata[9];?>">
 				

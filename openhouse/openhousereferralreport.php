@@ -41,13 +41,13 @@ include "../database.php";
 	$db_conn = connect_db($DB_SERVER, $DB_USER, $DB_PASS, $DB_NAME);	// from include
 
 	echo "<div id='view_openhouse'>";
-	$result = mysql_query("select DATE_FORMAT(create_date,'%d-%b-%y'),confirmation, group_adults, group_juniors,user_refer,reg_refer from learntocurl where User_refer is not null and User_refer > '' group by confirmation order by create_date desc limit 100;", $db_conn);
+	$result = mysql_query("select DATE_FORMAT(create_date,'%d-%b-%Y'),confirmation, gid, group_name,user_refer,reg_refer,openhouse_id from learntocurl where User_refer is not null and User_refer > '' group by confirmation order by create_date desc limit 100;", $db_conn);
 	if($result) { //query was a success
-		echo "<table>\n<TR><TH align=left title='Date user registered for event'>Date</TH><TH align=left>Referral Commented from User</TH><TH align=left>URL linked to registration</TH></TR>";
+		echo "<table>\n<TR><TH align=left title='Date user registered for event'>Registered</TH><TH align=left>Who<TH align=left>Referral Commented from User</TH><TH align=left>URL linked to registration</TH></TR>";
 		while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
 	
 			echo "<TR><TD>".$row[0]."</TD>";
-			// echo "<TD>".$row[2]."</TD><TD>".$row[3]."</TD>"; // Adult and Juniors
+			echo "<TD><a href='openhouseuseredit.php?gid=".$row[2]."&openhouseid=".$row[6]."'>".$row[3]."</a></TD>"; // openhouseuseredit.php?gid=2611&openhouseid=215
 			echo "<TD>".$row[4]."</TD>";
 			
 			// display short URL -- create function

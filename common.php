@@ -192,15 +192,15 @@ function connect_db($server, $user, $pass, $db_name) {
 	return $db_conn;
 }
 
-// $confirmation - record to exclude from count
-function setFlag($confirmation, $field, $value) {
+// $gid - modified from confirmation number jvp-dec-2013
+function setFlag($gid, $field, $value) {
 	// update record based on Confirmation number
-	$query = "update learntocurl SET $field = $value where CONFIRMATION = '".$confirmation."' ";
+	$query = "update learntocurl SET $field = $value where gid = '".$gid."' ";
 	//echo "<div class='error'>" .$query. "</DIV>";
 	
 	$result = mysql_query($query);
 	if( $result )
-		return "<div class='success'>Set $field to $value ($confirmation)</div>";
+		return "<div class='success'>Set $field to $value ($gid)</div>";
 	else
 		return "<div class='error'>Error</div>";
 }

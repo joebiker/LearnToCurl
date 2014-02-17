@@ -116,8 +116,6 @@ Number of juniors: <span class='userinput'><?php echo htmlspecialchars($_POST["j
 Confirmation number: <span class='userinput'><?php echo $confirmation_number; ?> </span><BR>
 
 
-
-<P>
 <?php payWithPayPal($confirmation_number, $e->getNiceDate());
 
 if($DEBUG)	echo "<div class=debug >";
@@ -169,7 +167,7 @@ $subject = 'Learn to Curl Registration Pending';
 $headers = 'From: '.$EMAIL_FROM_ADMIN. "\r\n" .
     'Reply-To: '.$EMAIL_FROM_ADMIN;
 
-$message = "Thank you for your registration. When payment is received, your spot is saved. \n\n".
+$message = "Your registration is pending payment. Your spot is reserved when payment is received. \n\n".
 "Event: ".$e->getNiceDate()." \n". // add event name
 "Leader: ".$_POST['groupname'][0]." \n".
 "Email: ".$_POST['email'][0]." \n".
@@ -190,19 +188,28 @@ if( !mail($to, $subject, $message, $headers) ) {
 <?php
 	}
 	else {
-		if( !isset($_POST['waiver']))
+		$goBack = "";
+		if( !isset($_POST['waiver'])) {
 			echo "<div class='error'>You must accept the waiver to continue.</div>";
-		
-		if( !isset($_POST['payment']))
+			$goBack = 1;
+		}
+
+		if( !isset($_POST['payment'])) {
 			echo "<div class='error'>You must accept the payment terms and conditions to continue.</div>";
-		
+			$goBack = 1;
+		}
 		if( isset($_POST['payment']) && isset($_POST['waiver']))   {
 			echo "<div class='error'>Adult Leader, name and email, are required for registration. Please try again.</div>";
 			if( $DEBUG ) {
 				echo "Var: Waiver  = ".$_POST['waiver']."<BR>";
 				echo "Var: Payment = ".$_POST['payment']."<BR>";
 			} 
+			$goBack = 1;
 		}
+		if ($goBack == 1) {
+			echo "<BR><BR><div>Please use your browser's back button to go back and fix the problem.</div>";
+		}
+
 	}
 
 } // End newopenhouse registration
@@ -231,7 +238,7 @@ else if( isset($_REQUEST['type']) && "editopenhouse" == $_REQUEST['type'] &&
 	$db_conn = connect_db($DB_SERVER, $DB_USER, $DB_PASS, $DB_NAME);	// from include
 	
 	// Check if confirmation code exists.....
-	$query = "select group_name, email, group_adults, group_juniors, event_date, event_name, paid_dollars, paid_type, openhouse_id from learntocurl, learntocurl_dates where openhouse_id=id and CONFIRMATION = '".$confirmation_number."'";
+	$query = "select group_name, email, sum(group_adults), sum(group_juniors), event_date, event_name, sum(paid_dollars), paid_type, openhouse_id from learntocurl, learntocurl_dates where openhouse_id=id and CONFIRMATION = '".$confirmation_number."'";
 	$result = mysql_query($query);
 	if( !$result ) {
 		die("<div class='error'>Could not execute your edit resuest: " . mysql_error(). "</div>");
@@ -239,7 +246,7 @@ else if( isset($_REQUEST['type']) && "editopenhouse" == $_REQUEST['type'] &&
 	else if ( mysql_affected_rows ($db_conn) <= 0 ) {
 		die("<div class='error'>Could not execute your registration resuest.</div>");
 	}
-		
+	
 	$reg_details = mysql_fetch_array($result);
 	
 	//For payWithPayPal(...) function -- no need to pass variables
@@ -274,8 +281,9 @@ else {
 
 if ($reg_details[6] < 1) {
 
-	if ( availableOpenhouseCountNoError($reg_details[8]) <= 0 ) {
-		echo "action: <span class='userinput'>$errorFullOpenHouse</span>";
+	if ( availableOpenhouseCountNoError($reg_details[8]) < ($reg_details[2]+$reg_details[3]) ) {
+		// We are comparing number of available spots to all participants in the confirmation code
+		echo "action: <span class='userinput'>$ERROR_FULL_EVENT</span>";
 	}
 	else {
 		// allow the payWithPayPal function to get the proper details.
