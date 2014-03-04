@@ -6,6 +6,7 @@
 	<meta name="DC.creator" content="Joe Petsche" />
 	<title>Pending Registration</title>
 	<link href="../learntocurl.css" rel="stylesheet" type="text/css" />
+	<link href="wheel.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 
