@@ -26,8 +26,13 @@ if( isset($_POST['type']) && "newopenhouse" == $_POST['type'] ) { // continue wi
 	
 	if( isset($_POST['groupname']) && isset($_POST['email']) && isset($_POST['waiver']) && isset($_POST['payment']) &&
 	    $_POST['groupname'][0] > "" && $_POST['email'][0] > "" && ($_POST['waiver']) == "on"  && ($_POST['payment']) == "on" ){
-
-		    
+		
+?><script type="text/javascript">
+window.onload=function(){ 
+    window.setTimeout(function() { document.paypalCheckout.submit(); }, 3000);
+};
+</script><?php
+	
 	if( isset($_POST['confnumber']) && $_POST['confnumber'] > "" ) {
 		$confirmation_number = $_POST['confnumber'];
 		$_POST['type'] = "modifyopenhouse";
@@ -107,14 +112,32 @@ if( isset($_POST['type']) && "newopenhouse" == $_POST['type'] ) { // continue wi
 	$arr = $e->getEmails();
 	$nicedate = $e->getNiceDate();
 ?>
+
+<P>Please wait while you are re-directed to PayPal for payment..</P>
+
+<div id="colorWheel">
+    <span class="color01"></span>
+    <span class="color02"></span>
+    <span class="color03"></span>
+    <span class="color04"></span>
+    <span class="color05"></span>
+    <span class="color06"></span>
+    <span class="color07"></span>
+    <span class="color08"></span>
+    <span class="color09"></span>
+    <span class="color10"></span>
+</div>
+
+<div style="display: none;">
 Event: <span class='userinput'><?php 
 echo $e->getNiceDate() ." - ". $e->getName(); ?> </span><BR>
 Leader: <span class='userinput'><?php echo $_POST["groupname"][0]; ?> </span><BR>
 Email: <span class='userinput'><?php echo htmlspecialchars($_POST["email"][0]); ?> </span><BR>
 Number of adults: <span class='userinput'><?php echo htmlspecialchars($_POST["adults"]); ?> </span><BR>
 Number of juniors: <span class='userinput'><?php echo htmlspecialchars($_POST["juniors"]); ?> </span><BR>
-Confirmation number: <span class='userinput'><?php echo $confirmation_number; ?> </span><BR>
+Confirmation number: <span class='userinput'><?php echo $confirmation_number; ?> </span>
 
+</div> <!-- END DIV HERE TO DISPLAY PAYPAL BUTTON -->
 
 <?php payWithPayPal($confirmation_number, $e->getNiceDate());
 
@@ -154,7 +177,7 @@ foreach($_POST['juniorname'] as $name) {
 }
 echo "</div>";
 ?>
-</P>
+<!-- END DIV HERE TO -NOT- DISPLAY PAYPAL BUTTON -->
 <br>
 <hr>
 <BR>
@@ -321,7 +344,7 @@ else {
 function payWithPayPal($confirmation_number, $openhousedate) {
 	global $PP_FORM_POST,$PAYPAL_USER, $PAYPAL_PWD,$PAYPAL_SIGNATURE,$PAYPAL_CANCELURL,$PAYPAL_RETURN,$PAYPAL_NOTIFY_URL,$PAYPAL_BUSINESS;
 	?>
-<form action="<?php echo $PP_FORM_POST; ?>" method="post">
+<form name="paypalCheckout" id="paypalCheckout" action="<?php echo $PP_FORM_POST; ?>" method="post">
 <input type=hidden name=USER value="<?php echo $PAYPAL_USER; ?>">
 <input type=hidden name=PWD value="<?php echo $PAYPAL_PWD; ?>">
 <input type=hidden name=SIGNATURE value="<?php echo $PAYPAL_SIGNATURE; ?>">

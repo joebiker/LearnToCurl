@@ -56,7 +56,7 @@ class Event
 			$result = mysqli_query($this->db_auth, $query); // , $this->db_auth);
 			if (!$result) {
 				echo "Database cannot be reached. ";
-				echo mysqli_error(); // $this->db_auth);
+				echo mysqli_error($this->db_auth);
 				return false;
 			}
 			if( mysqli_affected_rows($this->db_auth) == 1 ) {

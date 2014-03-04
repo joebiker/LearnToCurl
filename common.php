@@ -1,9 +1,10 @@
 <?php
-$errorFullOpenHouse = "Maximum amount of paid guests, payment cannot be accepted for this event. You can showup in person, to see if a spot opens up on the day of any event.";
 
 $DEBUG            = 0;
 $ERROR_MSG        = "";
+$SHEETS           = 3; // number of sheets in facility
 $L2C_PASS         = "";
+$CLUB_NAME        = "";
 $EMAIL_FROM_ADMIN = ""; // System sends email from this address
 $EMAIL_ERRORS_TO  = ""; // If error occurs send email here. Seperate by commas if you want multiple
 $PP_FORM_POST     = "";
@@ -18,7 +19,8 @@ $REGISTER_URL     = "";
 $PAYPAL_AUTH_TX   = "";
 $PAYPAL_IPN_URL   = "";	// UNUSED.  Difficulties. something isn't right here. Just edit the file Sept-2009
 $PAYPAL_RCPT_URL  = "";	// ipn and receipt.  Not tested if receipt and ipn can be in sandbox at same time
-
+$EMAIL_RCPT_TEXT  = "\n";
+$ERROR_FULL_EVENT = "Maximum amount of paid guests, payment cannot be accepted for this event. You can showup in person, to see if a spot opens up on the day of any event.";
 
 //////// My Function to generate a confirmation number //////////////////////
 function createConfirmation($group, $number) {

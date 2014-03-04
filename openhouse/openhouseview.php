@@ -317,7 +317,8 @@ if($result && isset($_REQUEST['view']) ) { //query was a success
 		echo '<TABLE width="100%" border=0><TR><TD valign=top>'; // Add Attendee
 		echo '<table>';
 		echo '<tr><th>Add</th><th>Attendee</th></tr>';
-	    echo '<tr><td>Group Name: <td><input type=text name="groupname" id="groupname">';
+	    echo '<tr><td>Group Name: <td><input type=text name="groupname" id="groupname" size=30>';
+	    echo '<tr><td>Email: <td><input type=text name="email" id="email" size=30>';
 	    echo '<tr><td># Adults: <td><input type=text name="adults" id="adults" value="1" size="1">';
 	    echo '<tr><td># Juniors: <td><input type=text name="juniors" id="juniors" value="0" size="1">';
 	    echo '<tr><td>Paid: <td><input type=text name="paid" id="paid" value="0" size="3"> ';
@@ -329,8 +330,7 @@ if($result && isset($_REQUEST['view']) ) { //query was a success
 	    echo '</select>';
 	    echo '<tr><td>Attended: <td><input type="checkbox" name="attended" id="attended">';
 	    echo '<tr><td>Waiver: <td><input type="checkbox" name="waiver" id="waiver">';
-	    echo '<tr><td>Email: <td><input type=text name="email" id="email" size=20>';
-	    echo '<tr><td>How did you hear<BR>about curling? <td valign=bottom><input type=text name="user_refer" id="user_refer" value=""></tr>';		
+	    echo '<tr><td>How did you hear<BR>about curling? <td valign=bottom><input type=text name="user_refer" id="user_refer" value="" size=30></tr>';		
 	    echo '<tr><td><td><input class="addbutton" type=submit value="add">';
 		echo '</form>';//&nbsp;</div>'; // IE6 needs the &nbsp; 
 	    echo "</td></tr></table>";

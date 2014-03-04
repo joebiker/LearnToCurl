@@ -27,22 +27,25 @@ setcookie("event_referral", getenv("HTTP_REFERER"));
 
 <h3>Sessions:</h3>
 <?php
-include "common.php";
-include "database.php";
-$db_conn = connect_db($DB_SERVER, $DB_USER, $DB_PASS, $DB_NAME);	// from include
 
-$myarray = getAvailableOpenhouses_delay(0);
+$eventTypes = "'L','P'"; // must be single quoted and seperated by commas: 'L','O','P'
+$hoursPreDelay = 2; // how long before the event starts to not display on list
+
+include "openhouse/cEvent.php";
+$oh = new Event();
+$myarray = $oh->getAvailableOpenhouses_delay($hoursPreDelay, $eventTypes);
 if( count($myarray) >0 ) {
 	echo "\n<table class=eventList>";
 	foreach($myarray as $event) {
-		$remain = availableOpenhouseCount($event['ID']);
+		$openhouse = new Event($event['ID']);
+		$remain = $openhouse->availableOpenhouseCount();
 		echo "\n<TR id='".$event['EVENT_TYPE'].$event['ID']."'><TD>".date('g:i A - l F j, Y',strtotime($event["EVENT_DATE"]))."&nbsp;</TD><TD>".$event["EVENT_NAME"]." (". $remain." spaces)</TD></TR>";
 	}
 	echo "\n</table>";
 	echo "<p><font color=red size='+1'><a href='openhouse/'>Sign up</a> to reserve your space! </font></p>";
 	
 } else { // none available
-	printf ("<P><B>No Learn to Curl sessions currently scheduled.</B> Check back soon! You can also sign up for our email notification list. Look for the sign up form on this page.<BR/></P>");
+	printf ("<P><B>No sessions currently scheduled.</B> Check back soon! You can also sign up for our email notification list. Look for the sign up form on this page.<BR/></P>");
 }
 ?>
 
