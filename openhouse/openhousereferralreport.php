@@ -46,7 +46,7 @@ include "../database.php";
 		echo "<table>\n<TR><TH align=left title='Date user registered for event'>Registered</TH><TH align=left>Who<TH align=left>Referral Commented from User</TH><TH align=left>URL linked to registration</TH></TR>";
 		while ($row = mysql_fetch_array($result, MYSQL_BOTH)) {
 	
-			echo "<TR><TD>".$row[0]."</TD>";
+			echo "<TR><TD><nobr>".$row[0]."</nobr></TD>";
 			echo "<TD><a href='openhouseuseredit.php?gid=".$row[2]."&openhouseid=".$row[6]."'>".$row[3]."</a></TD>"; // openhouseuseredit.php?gid=2611&openhouseid=215
 			echo "<TD>".$row[4]."</TD>";
 			
