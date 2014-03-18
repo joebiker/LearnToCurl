@@ -5,6 +5,7 @@ $ERROR_MSG        = "";
 $SHEETS           = 3; // number of sheets in facility
 $L2C_PASS         = "";
 $CLUB_NAME        = "";
+$DEFAULT_TYPES    = "L"; // Event types
 $EMAIL_FROM_ADMIN = ""; // System sends email from this address
 $EMAIL_ERRORS_TO  = ""; // If error occurs send email here. Seperate by commas if you want multiple
 $PP_FORM_POST     = "";
@@ -34,6 +35,19 @@ function createConfirmation($group, $number) {
 	
 	$conf = strtoupper($group[0]). $a . $b . $c . $number;
 	return $conf;
+}
+
+function parseTypesSQL($st, $len=51) {
+	$types_parse = substr($st,0,$len);
+	$types_array = explode(',', $types_parse);
+	$types_string = "";
+	foreach ($types_array as $t) {
+		//echo "'".$t."',";
+		$types_string .= "'".$t."',";
+	}
+	$types_string = rtrim($types_string, ",");
+	//echo $types_string;
+	return $sql_type_in = "($types_string)";
 }
 
 // August 2009 $10 for adult, $5 for junior, $20 for family (defined 1 or 2 adults and up to 4 juniors), $with_shipping will be added to price if included

@@ -154,13 +154,23 @@ if( isset($_REQUEST['type']) && "editopenhouse" == $_REQUEST['type'] ) {  // edi
 	<img class="icon" width="16" height="16" alt="" src="../stone.ico"/>
 	<strong>Registration</strong>
 </legend> 
+<?php
+
+// $sql_type_in = "('L', 'P')";
+$sql_type_in = parseTypesSQL($DEFAULT_TYPES);
+$max_input_length = 5; // thwart sql injection -- increase if desire to allow more than max_input_length / 2(round up)
+if( isset ($_REQUEST['o']) ) {
+	$sql_type_in = parseTypesSQL($_REQUEST['o'], $max_input_length);
+}
+?>
+
 <table cellpadding=2 cellspacing=0 border=0>
 <TR>
 <TD>Requested Event 
 <TD><select name="openhouseid" id="openhouseid" onchange="checkReg(this.value);">
 <?php
 
-	$events_result = mysql_query("select ID, EVENT_DATE, EVENT_NAME from learntocurl_dates where EVENT_DATE >= current_date() and EVENT_TYPE in ('L', 'P') order by EVENT_DATE ASC", $db_conn);
+	$events_result = mysql_query("select ID, EVENT_DATE, EVENT_NAME from learntocurl_dates where EVENT_DATE >= current_date() and EVENT_TYPE in $sql_type_in order by EVENT_DATE ASC", $db_conn);
 	if($events_result) { //query was a success
 		while ($row = mysql_fetch_array($events_result, MYSQL_BOTH)) {
 			if( $modify_event_id == $row[0] ) $selected = "selected"; else $selected = "";
